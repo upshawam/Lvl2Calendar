@@ -173,20 +173,41 @@
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
+  }
+  .toggle-hint {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+    color: #555;
   }
   .pattern-btn {
     padding: 8px 14px;
-    border: 2px solid #ccc;
-    border-radius: 6px;
-    background: #fff;
+    border: 1px solid #9ca3af;
+    border-radius: 10px;
+    background: linear-gradient(#ffffff, #f3f4f6);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.12);
     cursor: pointer;
     font-size: 13px;
     font-family: Arial, sans-serif;
-    transition: all 0.15s;
+    font-weight: 600;
+    transition: transform 0.08s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
   }
-  .pattern-btn:hover { border-color: #888; background: #f0f0f0; }
-  .pattern-btn.active { border-color: #3a7bd5; background: #d9e8ff; font-weight: bold; }
+  .pattern-btn:hover {
+    border-color: #6b7280;
+    background: linear-gradient(#ffffff, #e5e7eb);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.14);
+    transform: translateY(-1px);
+  }
+  .pattern-btn:active {
+    transform: translateY(0);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+  }
+  .pattern-btn.active {
+    border-color: #3a7bd5;
+    background: linear-gradient(#e8f1ff, #d9e8ff);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.12);
+    font-weight: 700;
+  }
   #detailsToggle {
     margin-bottom: 14px;
     border-color: #6b7280;
@@ -205,6 +226,7 @@
 <h1>12-Month Schedule – Aaron & Randall</h1>
 
 <div class="pattern-toggle" id="patternToggle"></div>
+<p class="toggle-hint">Click a schedule tab to view different schedules.</p>
 <button id="detailsToggle" class="pattern-btn" type="button">Hide Plan Details</button>
 
 <div id="compareContainer"></div>
@@ -232,7 +254,7 @@ const MANAGER_SEQUENCE84 = [
 // Selected comparison patterns only.
 const PATTERNS = [
   {
-    label: "Full weekend blocks",
+    label: "Proposed Schdeule",
     desc: "Off: Fri + Mon with 2 added low-impact workdays · 170/170/24 · Pattern 5 structure with stronger full-weekend grouping",
     even: [1,null,0,0,0,1,1,0,0,1,1,1,0,0],
     odd:  [0,1,1,1,null,0,0,1,1,0,0,0,1,1],
@@ -242,7 +264,7 @@ const PATTERNS = [
     }
   },
   {
-    label: "Full weekend blocks (transition)",
+    label: "Proposed Schedule with Transition",
     desc: "First 4 weeks follow Manager Baseline, then shifts into full-weekend cadence for the rest of the year · 170/170/24.",
     transitionDays: 28,
     transitionSequence84: MANAGER_SEQUENCE84,
@@ -250,7 +272,7 @@ const PATTERNS = [
     odd:  [0,1,1,1,null,0,0,1,1,0,0,0,1,1]
   },
   {
-    label: "Manager Baseline",
+    label: "Current Baseline Schedule",
     desc: "Directly based on STE II rows in CURRENT Master Schedule(BLANK).csv, anchored at row 19 col G = Apr 9 for Aaron (84-day baseline repeated).",
     sequence84: MANAGER_SEQUENCE84
   }
