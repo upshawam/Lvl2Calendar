@@ -105,11 +105,6 @@
     white-space: nowrap;
     overflow: hidden;
   }
-  .off .worker {
-    white-space: normal;
-    overflow-wrap: anywhere;
-    line-height: 1.15;
-  }
   .legend {
     margin-bottom: 14px;
     display: flex;
@@ -134,32 +129,12 @@
     color: #555;
     font-size: 13px;
   }
-  .pattern-toggle {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-  }
-  .pattern-btn {
-    padding: 8px 14px;
-    border: 2px solid #ccc;
-    border-radius: 6px;
-    background: #fff;
-    cursor: pointer;
-    font-size: 13px;
-    font-family: Arial, sans-serif;
-    transition: all 0.15s;
-  }
-  .pattern-btn:hover { border-color: #888; background: #f0f0f0; }
-  .pattern-btn.active { border-color: #3a7bd5; background: #d9e8ff; font-weight: bold; }
 </style>
 </head>
 <body>
 
-<h1>12-Month Schedule – Aaron & Randall</h1>
-<p>Apr 9, 2026 – Apr 7, 2027 &nbsp;|&nbsp; 26 two-week cycles &nbsp;|&nbsp; 169/169/26 &nbsp;|&nbsp; Select a pattern below to compare</p>
-
-<div class="pattern-toggle" id="patternToggle"></div>
+<h1>12-Month Schedule – Aaron & Randall (Variant 1)</h1>
+<p>Apr 9, 2026 – Apr 7, 2027 &nbsp;|&nbsp; Friday-leaning off-days (Friday aligned) &nbsp;|&nbsp; full 26-cycle balance</p>
 
 <div class="legend">
   <div class="legend-item aaron">Aaron</div>
@@ -174,65 +149,22 @@ const startDate = new Date(2026, 3, 9); // Apr 9, 2026
 
 const totalDays = 364; // 26 exact 14-day cycles = perfectly balanced year
 const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-// Valid patterns found by brute-force search plus Randall's proposed plan.
-// Each has: even/odd 14-day arrays, off-day weekdays, max streak, min gap.
-const PATTERNS = [
-  {
-    label: "Pattern 1",
-    desc: "Off: Fri + Sat · Max streak 3/3 · Blocks of 3",
-    even: [0,null,1,0,0,0,1,1,1,0,0,0,1,1],
-    odd:  [1,0,null,1,1,1,0,0,0,1,1,1,0,0]
-  },
-  {
-    label: "Pattern 2",
-    desc: "Off: Fri + Sat · Max streak 2/2 · Only ever 2 days on at a time",
-    even: [0,null,1,0,0,1,1,0,0,1,1,0,0,1],
-    odd:  [1,0,null,1,1,0,0,1,1,0,0,1,1,0]
-  },
-  {
-    label: "Pattern 3",
-    desc: "Off: Fri + Mon · Max streak 3/3 · Aaron starts first 3",
-    even: [0,null,1,1,1,0,0,0,1,1,0,0,0,1],
-    odd:  [1,0,0,0,null,1,1,1,0,0,1,1,1,0]
-  },
-  {
-    label: "Pattern 4",
-    desc: "Off: Fri + Mon · Max streak 3/3 · Randall starts first 3",
-    even: [1,null,0,0,0,1,1,0,0,0,1,1,1,0],
-    odd:  [0,1,1,1,null,0,0,1,1,1,0,0,0,1]
-  },
-  {
-    label: "Pattern 5",
-    desc: "Off: Fri + Mon · Max streak 3/3 · Mixed alternating start",
-    even: [1,null,0,0,0,1,1,0,0,1,1,1,0,0],
-    odd:  [0,1,1,1,null,0,0,1,1,0,0,0,1,1]
-  },
-  {
-    label: "Randalls plan updated",
-    desc: "Mon–Wed vs Thu–Sun style with 26 off days added to balance totals/fairness. Produces 169/169/26 and balanced weekday/weekend counts, but still allows longer 4-day runs.",
-    // Thu Fri Sat Sun Mon Tue Wed Thu Fri Sat Sun Mon Tue Wed
-    // Updated from Randall's plan: add one off-day each cycle at day 0 for balance.
-    // Even cycle removes a Randall day; odd cycle removes an Aaron day.
-    even: [null,1,1,1,0,0,0,1,1,1,1,0,0,0],
-    odd:  [null,0,0,0,1,1,1,0,0,0,0,1,1,1]
-  },
-  {
-    label: "Pattern 7 (Copilot optimized)",
-    desc: "Best overall balance: 169/169/26, equal weekend/weekday split, max 3-day runs, and straightforward repeating cadence.",
-    // Thu Fri Sat Sun Mon Tue Wed Thu Fri Sat Sun Mon Tue Wed
-    // One Friday off per cycle; even/odd cycles mirror for clean fairness.
-    even: [0,0,0,1,1,1,0,0,null,1,1,1,0,0],
-    odd:  [1,1,1,0,0,0,1,1,null,0,0,0,1,1]
-  }
-];
+// Patterns anchored to Thursday (Apr 9 start). Each 14-day cycle:
+// Even cycle: Aaron works 7 shifts, Randall 6. Off = 2nd Friday.
+// Odd  cycle: Randall works 7 shifts, Aaron 6.  Off = 2nd Friday.
+// Both people max 3 consecutive days, all off-days land on Fridays, 169/169/26 per year.
+//           Thu Fri  Sat Sun Mon Tue Wed Thu  Off  Sat Sun Mon Tue Wed
+// Fix: after the Friday Off-day, assign Saturday to the OTHER person so nobody
+// gets a 1-day gap ("3 on, 1 off, 3 on"). Min gap between any two work blocks = 2 days.
+const evenPattern = [0,  0,   0,  1,  1,  1,  0,  0,  null, 1,  1,  1,  0,  0];
+const oddPattern  = [1,  1,   1,  0,  0,  0,  1,  1,  null, 0,  0,  0,  1,  1];
 
-let activePattern = 1; // default to Pattern 2 (best)
+
 
 function getWorkerFridayLeaning(globalIndex) {
-  const p = PATTERNS[activePattern];
   const cycle = Math.floor(globalIndex / 14);
   const dayInCycle = globalIndex % 14;
-  return cycle % 2 === 0 ? p.even[dayInCycle] : p.odd[dayInCycle];
+  return cycle % 2 === 0 ? evenPattern[dayInCycle] : oddPattern[dayInCycle];
 }
 
 function getWorkerTwoWeekFlip(globalIndex) {
@@ -265,48 +197,23 @@ function buildSchedule(getWorkerFn) {
   let aaronCount = 0;
   let randallCount = 0;
   let offCount = 0;
-  let aaronWeekendCount = 0;
-  let randallWeekendCount = 0;
-  let aaronWeekdayCount = 0;
-  let randallWeekdayCount = 0;
 
   for (let day = 0; day < totalDays; day++) {
     const date = new Date(startDate);
     date.setDate(startDate.getDate() + day);
     const key = formatDate(date);
-    // Pattern-driven assignment (even/odd cycles)
+    // Day index is resolved by phase-aligned Friday-leaning cycle rules
     const worker = getWorkerFn(day);
-    const dayOfWeek = date.getDay(); // Sun=0 ... Sat=6
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-    const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
 
     scheduleByDate.set(key, worker);
     workersByIndex.push(worker);
 
-    if (worker === 0) {
-      aaronCount++;
-      if (isWeekend) aaronWeekendCount++;
-      if (isWeekday) aaronWeekdayCount++;
-    }
-    else if (worker === 1) {
-      randallCount++;
-      if (isWeekend) randallWeekendCount++;
-      if (isWeekday) randallWeekdayCount++;
-    }
+    if (worker === 0) aaronCount++;
+    else if (worker === 1) randallCount++;
     else offCount++;
   }
 
-  return {
-    scheduleByDate,
-    workersByIndex,
-    aaronCount,
-    randallCount,
-    offCount,
-    aaronWeekendCount,
-    randallWeekendCount,
-    aaronWeekdayCount,
-    randallWeekdayCount
-  };
+  return { scheduleByDate, workersByIndex, aaronCount, randallCount, offCount };
 }
 
 function maxConsecutiveWork(workersByIndex, workerId) {
@@ -340,23 +247,9 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
   subtitle.textContent = subtitleText;
   variant.appendChild(subtitle);
 
-  const {
-    scheduleByDate,
-    workersByIndex,
-    aaronCount,
-    randallCount,
-    offCount,
-    aaronWeekendCount,
-    randallWeekendCount,
-    aaronWeekdayCount,
-    randallWeekdayCount
-  } = buildSchedule(getWorkerFn);
+  const { scheduleByDate, workersByIndex, aaronCount, randallCount, offCount } = buildSchedule(getWorkerFn);
   const aaronMaxStreak = maxConsecutiveWork(workersByIndex, 0);
   const randallMaxStreak = maxConsecutiveWork(workersByIndex, 1);
-  const totalWeeks = totalDays / 7;
-  const hoursPerShift = 12;
-  const aaronAvgHoursPerWeek = ((aaronCount * hoursPerShift) / totalWeeks).toFixed(1);
-  const randallAvgHoursPerWeek = ((randallCount * hoursPerShift) / totalWeeks).toFixed(1);
 
   const totals = document.createElement("div");
   totals.className = "totals";
@@ -376,30 +269,6 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
     <div class="total-card">
       <div>Max Consecutive (Aaron/Randall)</div>
       <div class="total-value">${aaronMaxStreak}/${randallMaxStreak}</div>
-    </div>
-    <div class="total-card">
-      <div>Aaron Weekend (Sat/Sun)</div>
-      <div class="total-value">${aaronWeekendCount}</div>
-    </div>
-    <div class="total-card">
-      <div>Randall Weekend (Sat/Sun)</div>
-      <div class="total-value">${randallWeekendCount}</div>
-    </div>
-    <div class="total-card">
-      <div>Aaron Weekday (Mon–Fri)</div>
-      <div class="total-value">${aaronWeekdayCount}</div>
-    </div>
-    <div class="total-card">
-      <div>Randall Weekday (Mon–Fri)</div>
-      <div class="total-value">${randallWeekdayCount}</div>
-    </div>
-    <div class="total-card">
-      <div>Aaron Avg Hrs/Week</div>
-      <div class="total-value">${aaronAvgHoursPerWeek}</div>
-    </div>
-    <div class="total-card">
-      <div>Randall Avg Hrs/Week</div>
-      <div class="total-value">${randallAvgHoursPerWeek}</div>
     </div>
   `;
   variant.appendChild(totals);
@@ -456,7 +325,7 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
         cell.innerHTML = `<span class="date">${day}</span><span class="worker">Randall</span>`;
       } else if (worker === null) {
         cell.className = "cell off";
-        cell.innerHTML = `<span class="date">${day}</span><span class="worker">Both Off</span>`;
+        cell.innerHTML = `<span class="date">${day}</span><span class="worker">Off</span>`;
       } else {
         cell.className = "cell empty";
         cell.innerHTML = `<span class="date">${day}</span><span class="worker">—</span>`;
@@ -483,42 +352,11 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
   compareContainer.appendChild(variant);
 }
 
-function redraw() {
-  document.getElementById('compareContainer').innerHTML = '';
-  const p = PATTERNS[activePattern];
-  renderVariant(
-    'Pattern ' + (activePattern + 1) + ': ' + p.label.replace(/Pattern \d+ ?★? ?Best? ?/,''),
-    p.desc,
-    getWorkerFridayLeaning
-  );
-  const info = document.getElementById('patternInfo');
-  if (info) info.textContent = p.desc;
-}
-
-// Initial render
-redraw();
-
-// Build toggle buttons
-const toggleEl = document.getElementById('patternToggle');
-PATTERNS.forEach((p, i) => {
-  const btn = document.createElement('button');
-  btn.className = 'pattern-btn' + (i === activePattern ? ' active' : '');
-  btn.textContent = p.label;
-  btn.title = p.desc;
-  btn.addEventListener('click', () => {
-    activePattern = i;
-    document.querySelectorAll('.pattern-btn').forEach((b, j) => b.classList.toggle('active', j === i));
-    redraw();
-  });
-  toggleEl.appendChild(btn);
-});
-
-// Pattern description line beneath toggle
-const info = document.createElement('p');
-info.id = 'patternInfo';
-info.style.cssText = 'margin:-8px 0 14px 0;color:#444;font-size:13px;font-style:italic;';
-info.textContent = PATTERNS[activePattern].desc;
-toggleEl.insertAdjacentElement('afterend', info);
+renderVariant(
+  "Variant 1: 12-Month Schedule – Friday-Leaning Off-Days",
+  "26 two-week cycles · 169 Aaron / 169 Randall / 26 Off · Max 3 consecutive for both · All off-days on Fridays",
+  getWorkerFridayLeaning
+);
 </script>
 
 </body>
