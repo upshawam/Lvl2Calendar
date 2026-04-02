@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>12-Month Calendar – Aaron & Randall (Variant 1)</title>
 <style>
   body {
@@ -11,7 +14,7 @@
     color: #222;
   }
   h1 {
-    margin-bottom: 6px;
+    margin-bottom: 16px;
   }
   p {
     margin-top: 0;
@@ -33,6 +36,11 @@
   .total-value {
     font-size: 20px;
     font-weight: bold;
+  }
+  .breakdown-card .total-value {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
   }
   .months {
     display: grid;
@@ -133,6 +141,9 @@
   .schedule-variant {
     margin-bottom: 24px;
   }
+  .plan-details {
+    margin-bottom: 10px;
+  }
   .variant-title {
     margin: 0 0 4px 0;
     font-size: 18px;
@@ -191,26 +202,38 @@ const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const PATTERNS = [
   {
     label: "Full weekend blocks",
-    desc: "Off: Fri + Mon · Max streak 3/3 · Pattern 5 structure with stronger full-weekend grouping",
+    desc: "Off: Fri + Mon with 2 added low-impact workdays · 170/170/24 · Pattern 5 structure with stronger full-weekend grouping",
     even: [1,null,0,0,0,1,1,0,0,1,1,1,0,0],
-    odd:  [0,1,1,1,null,0,0,1,1,0,0,0,1,1]
+    odd:  [0,1,1,1,null,0,0,1,1,0,0,0,1,1],
+    overrides: {
+      "2026-04-10": 1,
+      "2026-10-12": 0
+    }
   },
   {
     label: "Mixed weekend blocks",
-    desc: "Best overall balance: 169/169/26, equal weekend/weekday split, max 3-day runs, and straightforward repeating cadence.",
+    desc: "Best overall balance with 2 added low-impact Fridays · 170/170/24 · equal weekend/weekday split, max 3-day runs, and straightforward repeating cadence.",
     // Thu Fri Sat Sun Mon Tue Wed Thu Fri Sat Sun Mon Tue Wed
     // One Friday off per cycle; even/odd cycles mirror for clean fairness.
     even: [0,0,0,1,1,1,0,0,null,1,1,1,0,0],
-    odd:  [1,1,1,0,0,0,1,1,null,0,0,0,1,1]
+    odd:  [1,1,1,0,0,0,1,1,null,0,0,0,1,1],
+    overrides: {
+      "2026-09-04": 0,
+      "2026-10-16": 1
+    }
   },
   {
     label: "Randall's plan updated",
-    desc: "Mon–Wed vs Thu–Sun style with 26 off days added to balance totals/fairness. Produces 169/169/26 and balanced weekday/weekend counts, but still allows longer 4-day runs.",
+    desc: "Mon–Wed vs Thu–Sun style with 24 both-off days added to balance totals/fairness. Produces 170/170/24 and balanced weekday/weekend counts, but still allows longer 4-day runs.",
     // Thu Fri Sat Sun Mon Tue Wed Thu Fri Sat Sun Mon Tue Wed
     // Updated from Randall's plan: add one off-day each cycle at day 0 for balance.
     // Even cycle removes a Randall day; odd cycle removes an Aaron day.
     even: [null,1,1,1,0,0,0,1,1,1,1,0,0,0],
-    odd:  [null,0,0,0,1,1,1,0,0,0,0,1,1,1]
+    odd:  [null,0,0,0,1,1,1,0,0,0,0,1,1,1],
+    overrides: {
+      "2026-04-09": 0,
+      "2026-10-08": 1
+    }
   },
   {
     label: "Manager Baseline",
@@ -236,6 +259,13 @@ function getWorkerFridayLeaning(globalIndex) {
   const cycle = Math.floor(globalIndex / 14);
   const dayInCycle = globalIndex % 14;
   return cycle % 2 === 0 ? p.even[dayInCycle] : p.odd[dayInCycle];
+}
+
+function applyPatternOverride(worker, date) {
+  const p = PATTERNS[activePattern];
+  if (!p.overrides) return worker;
+  const key = formatDate(date);
+  return Object.prototype.hasOwnProperty.call(p.overrides, key) ? p.overrides[key] : worker;
 }
 
 function getWorkerTwoWeekFlip(globalIndex) {
@@ -278,7 +308,7 @@ function buildSchedule(getWorkerFn) {
     date.setDate(startDate.getDate() + day);
     const key = formatDate(date);
     // Pattern-driven assignment (even/odd cycles)
-    const worker = getWorkerFn(day);
+    const worker = applyPatternOverride(getWorkerFn(day), date);
     const dayOfWeek = date.getDay(); // Sun=0 ... Sat=6
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
     const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
@@ -328,6 +358,38 @@ function maxConsecutiveWork(workersByIndex, workerId) {
   return maxStreak;
 }
 
+function countExactOffBlocks(workersByIndex, workerId, targetLength) {
+  let count = 0;
+  let currentStreak = 0;
+
+  for (const worker of [...workersByIndex, workerId]) {
+    if (worker !== workerId) {
+      currentStreak++;
+    } else {
+      if (currentStreak === targetLength) count++;
+      currentStreak = 0;
+    }
+  }
+
+  return count;
+}
+
+function countAtLeastOffBlocks(workersByIndex, workerId, minLength) {
+  let count = 0;
+  let currentStreak = 0;
+
+  for (const worker of [...workersByIndex, workerId]) {
+    if (worker !== workerId) {
+      currentStreak++;
+    } else {
+      if (currentStreak >= minLength) count++;
+      currentStreak = 0;
+    }
+  }
+
+  return count;
+}
+
 function renderVariant(titleText, subtitleText, getWorkerFn) {
   const compareContainer = document.getElementById("compareContainer");
   const variant = document.createElement("section");
@@ -346,6 +408,12 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
   } = buildSchedule(getWorkerFn);
   const aaronMaxStreak = maxConsecutiveWork(workersByIndex, 0);
   const randallMaxStreak = maxConsecutiveWork(workersByIndex, 1);
+  const aaronThreeDayOffBlocks = countExactOffBlocks(workersByIndex, 0, 3);
+  const aaronFourDayOffBlocks = countExactOffBlocks(workersByIndex, 0, 4);
+  const aaronFivePlusDayOffBlocks = countAtLeastOffBlocks(workersByIndex, 0, 5);
+  const randallThreeDayOffBlocks = countExactOffBlocks(workersByIndex, 1, 3);
+  const randallFourDayOffBlocks = countExactOffBlocks(workersByIndex, 1, 4);
+  const randallFivePlusDayOffBlocks = countAtLeastOffBlocks(workersByIndex, 1, 5);
   const totalWeeks = totalDays / 7;
   const hoursPerShift = 12;
   const aaronAvgHoursPerWeek = ((aaronCount * hoursPerShift) / totalWeeks).toFixed(1);
@@ -363,36 +431,30 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
       <div class="total-value">${randallCount}</div>
     </div>
     <div class="total-card off">
-      <div>Off Days</div>
+      <div>Both Off</div>
       <div class="total-value">${offCount}</div>
     </div>
     <div class="total-card">
       <div>Max Consecutive (Aaron/Randall)</div>
       <div class="total-value">${aaronMaxStreak}/${randallMaxStreak}</div>
     </div>
-    <div class="total-card">
-      <div>Aaron Weekend (Sat/Sun)</div>
-      <div class="total-value">${aaronWeekendCount}</div>
+    <div class="total-card breakdown-card">
+      <div>Off-Block Breakdown (Aaron/Randall)</div>
+      <div class="total-value">3-Day Offs: ${aaronThreeDayOffBlocks}/${randallThreeDayOffBlocks}</div>
+      <div class="total-value">4-Day Offs: ${aaronFourDayOffBlocks}/${randallFourDayOffBlocks}</div>
+      <div class="total-value">5+ Day Offs: ${aaronFivePlusDayOffBlocks}/${randallFivePlusDayOffBlocks}</div>
     </div>
-    <div class="total-card">
-      <div>Randall Weekend (Sat/Sun)</div>
-      <div class="total-value">${randallWeekendCount}</div>
+    <div class="total-card breakdown-card">
+      <div>Weekend Shifts (Aaron/Randall)</div>
+      <div class="total-value">${aaronWeekendCount}/${randallWeekendCount}</div>
     </div>
-    <div class="total-card">
-      <div>Aaron Weekday (Mon–Fri)</div>
-      <div class="total-value">${aaronWeekdayCount}</div>
+    <div class="total-card breakdown-card">
+      <div>Weekday Shifts (Aaron/Randall)</div>
+      <div class="total-value">${aaronWeekdayCount}/${randallWeekdayCount}</div>
     </div>
-    <div class="total-card">
-      <div>Randall Weekday (Mon–Fri)</div>
-      <div class="total-value">${randallWeekdayCount}</div>
-    </div>
-    <div class="total-card">
-      <div>Aaron Avg Hrs/Week</div>
-      <div class="total-value">${aaronAvgHoursPerWeek}</div>
-    </div>
-    <div class="total-card">
-      <div>Randall Avg Hrs/Week</div>
-      <div class="total-value">${randallAvgHoursPerWeek}</div>
+    <div class="total-card breakdown-card">
+      <div>Avg Hrs/Week (Aaron/Randall)</div>
+      <div class="total-value">${aaronAvgHoursPerWeek}/${randallAvgHoursPerWeek}</div>
     </div>
   `;
   totals.style.display = showPlanDetails ? "flex" : "none";
