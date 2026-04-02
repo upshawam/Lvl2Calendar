@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>12-Week Calendar – Aaron & Randall</title>
+<title>12-Month Calendar – Aaron & Randall (Variant 1)</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -77,7 +77,6 @@
     border-radius: 4px;
     min-width: 0;
     box-sizing: border-box;
-    overflow: hidden;
   }
   .empty {
     background: #f3f3f3;
@@ -103,10 +102,8 @@
   .worker {
     font-size: 11px;
     display: block;
-    line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: clip;
   }
   .legend {
     margin-bottom: 14px;
@@ -136,8 +133,8 @@
 </head>
 <body>
 
-<h1>12-Week Calendar – Aaron & Randall</h1>
-<p>Starting Monday, May 4, 2026</p>
+<h1>12-Month Schedule – Aaron & Randall (Variant 1)</h1>
+<p>Apr 9, 2026 – Apr 7, 2027 &nbsp;|&nbsp; Aaron naturally works Apr 9–11 via cycle &nbsp;|&nbsp; Friday-leaning off-days</p>
 
 <div class="legend">
   <div class="legend-item aaron">Aaron</div>
@@ -148,12 +145,10 @@
 <div id="compareContainer"></div>
 
 <script>
-// Start date (first Monday of May 2026)
-const startDate = new Date(2026, 4, 4); // May = 4
+const startDate = new Date(2026, 3, 9); // Apr 9, 2026
 
-const totalDays = 12 * 7; // 12 weeks
+const totalDays = 364; // 26 exact 14-day cycles = perfectly balanced year
 const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const swapAssignments = true;
 
 // Base 14-day pattern (A=0, R=1, Off=null)
 const basePattern = [
@@ -226,59 +221,29 @@ function daysInMonth(year, monthIndex) {
   return new Date(year, monthIndex + 1, 0).getDate();
 }
 
-function applyWorkerSwap(worker) {
-  if (!swapAssignments) return worker;
-  if (worker === 0) return 1;
-  if (worker === 1) return 0;
-  return worker;
-}
-
 function buildSchedule(getWorkerFn) {
   const scheduleByDate = new Map();
   const workersByIndex = [];
   let aaronCount = 0;
   let randallCount = 0;
   let offCount = 0;
-  let aaronWeekdayCount = 0;
-  let aaronWeekendCount = 0;
-  let randallWeekdayCount = 0;
-  let randallWeekendCount = 0;
 
   for (let day = 0; day < totalDays; day++) {
     const date = new Date(startDate);
     date.setDate(startDate.getDate() + day);
     const key = formatDate(date);
-    const worker = applyWorkerSwap(getWorkerFn(day));
-    const dayOfWeek = date.getDay(); // Sun=0 ... Sat=6
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    // Cycle starts Apr 9 — even cycle naturally assigns Aaron to days 0,1,2 (Apr 9,10,11)
+    const worker = getWorkerFn(day);
 
     scheduleByDate.set(key, worker);
     workersByIndex.push(worker);
 
-    if (worker === 0) {
-      aaronCount++;
-      if (isWeekend) aaronWeekendCount++;
-      else aaronWeekdayCount++;
-    }
-    else if (worker === 1) {
-      randallCount++;
-      if (isWeekend) randallWeekendCount++;
-      else randallWeekdayCount++;
-    }
+    if (worker === 0) aaronCount++;
+    else if (worker === 1) randallCount++;
     else offCount++;
   }
 
-  return {
-    scheduleByDate,
-    workersByIndex,
-    aaronCount,
-    randallCount,
-    offCount,
-    aaronWeekdayCount,
-    aaronWeekendCount,
-    randallWeekdayCount,
-    randallWeekendCount
-  };
+  return { scheduleByDate, workersByIndex, aaronCount, randallCount, offCount };
 }
 
 function maxConsecutiveWork(workersByIndex, workerId) {
@@ -312,20 +277,9 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
   subtitle.textContent = subtitleText;
   variant.appendChild(subtitle);
 
-  const {
-    scheduleByDate,
-    workersByIndex,
-    aaronCount,
-    randallCount,
-    offCount,
-    aaronWeekdayCount,
-    aaronWeekendCount,
-    randallWeekdayCount,
-    randallWeekendCount
-  } = buildSchedule(getWorkerFn);
+  const { scheduleByDate, workersByIndex, aaronCount, randallCount, offCount } = buildSchedule(getWorkerFn);
   const aaronMaxStreak = maxConsecutiveWork(workersByIndex, 0);
   const randallMaxStreak = maxConsecutiveWork(workersByIndex, 1);
-  const showFairnessCounters = titleText.includes("Variant 1");
 
   const totals = document.createElement("div");
   totals.className = "totals";
@@ -346,16 +300,6 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
       <div>Max Consecutive (Aaron/Randall)</div>
       <div class="total-value">${aaronMaxStreak}/${randallMaxStreak}</div>
     </div>
-    ${showFairnessCounters ? `
-    <div class="total-card">
-      <div>Aaron Weekday/Weekend</div>
-      <div class="total-value">${aaronWeekdayCount}/${aaronWeekendCount}</div>
-    </div>
-    <div class="total-card">
-      <div>Randall Weekday/Weekend</div>
-      <div class="total-value">${randallWeekdayCount}/${randallWeekendCount}</div>
-    </div>
-    ` : ""}
   `;
   variant.appendChild(totals);
 
@@ -439,15 +383,9 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
 }
 
 renderVariant(
-  "Variant 1: Friday-Leaning Off-Day",
-  "Balanced at 39/39 with 6 off days and Friday-leaning off-day placement.",
+  "Variant 1: 12-Month Schedule – Friday-Leaning Off-Days",
+  "26 exact two-week cycles. Aaron naturally works Apr 9–11 via cycle alignment. Balanced at 169/169 with 26 off days.",
   getWorkerFridayLeaning
-);
-
-renderVariant(
-  "Variant 2: Proposed 2-Week Flip (Mon-Wed vs Thu-Sun)",
-  "Same weekly day split, flipped every 2 weeks for comparison.",
-  getWorkerTwoWeekFlip
 );
 </script>
 
