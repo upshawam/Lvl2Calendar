@@ -118,6 +118,22 @@
     overflow-wrap: anywhere;
     line-height: 1.15;
   }
+  .cell.randall-strike {
+    position: relative;
+  }
+  .cell.randall-strike::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    top: 52%;
+    border-top: 2px solid #b91c1c;
+    transform: rotate(-20deg);
+    pointer-events: none;
+  }
+  .cell.transition-phase {
+    border: 2px solid #dc2626;
+  }
   .legend {
     margin-bottom: 14px;
     display: flex;
@@ -198,6 +214,21 @@ const startDate = new Date(2026, 3, 9); // Apr 9, 2026
 
 const totalDays = 364; // 26 exact 14-day cycles = perfectly balanced year
 const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const RANDALL_VISUAL_STRIKE_DATES = new Set([
+  "2026-04-13",
+  "2026-04-14",
+  "2026-04-15",
+  "2026-04-16",
+  "2026-04-20",
+  "2026-04-21",
+  "2026-04-22"
+]);
+const MANAGER_SEQUENCE84 = [
+  0,0,0,0,1,1,1,1,0,0,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1,
+  1,0,0,0,1,1,1,1,0,0,0,null,null,0,0,1,1,1,0,0,0,0,1,1,1,1,0,
+  0,0,1,1,1,0,0,0,0,1,1,1,null,0,0,0,1,1,1,0,0,0,null,1,1,1,1,
+  null,null
+];
 // Selected comparison patterns only.
 const PATTERNS = [
   {
@@ -207,8 +238,16 @@ const PATTERNS = [
     odd:  [0,1,1,1,null,0,0,1,1,0,0,0,1,1],
     overrides: {
       "2026-04-10": 1,
-      "2026-10-12": 0
+      "2026-05-25": 0
     }
+  },
+  {
+    label: "Full weekend blocks (transition)",
+    desc: "First 4 weeks follow Manager Baseline, then shifts into full-weekend cadence for the rest of the year · 170/170/24.",
+    transitionDays: 28,
+    transitionSequence84: MANAGER_SEQUENCE84,
+    even: [1,null,0,0,0,1,1,0,0,1,1,1,0,0],
+    odd:  [0,1,1,1,null,0,0,1,1,0,0,0,1,1]
   },
   {
     label: "Mixed weekend blocks",
@@ -220,6 +259,18 @@ const PATTERNS = [
     overrides: {
       "2026-09-04": 0,
       "2026-10-16": 1
+    }
+  },
+  {
+    label: "Mixed weekend blocks (transition)",
+    desc: "First 4 weeks follow Manager Baseline, then shifts into mixed-weekend cadence with 2 balancing date adjustments · 170/170/24.",
+    transitionDays: 28,
+    transitionSequence84: MANAGER_SEQUENCE84,
+    even: [0,0,0,1,1,1,0,0,null,1,1,1,0,0],
+    odd:  [1,1,1,0,0,0,1,1,null,0,0,0,1,1],
+    overrides: {
+      "2026-05-15": 0,
+      "2026-05-19": null
     }
   },
   {
@@ -238,19 +289,18 @@ const PATTERNS = [
   {
     label: "Manager Baseline",
     desc: "Directly based on STE II rows in CURRENT Master Schedule(BLANK).csv, anchored at row 19 col G = Apr 9 for Aaron (84-day baseline repeated).",
-    sequence84: [
-      0,0,0,0,1,1,1,1,0,0,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1,
-      1,0,0,0,1,1,1,1,0,0,0,null,null,0,0,1,1,1,0,0,0,0,1,1,1,1,0,
-      0,0,1,1,1,0,0,0,0,1,1,1,null,0,0,0,1,1,1,0,0,0,null,1,1,1,1,
-      null,null
-    ]
+    sequence84: MANAGER_SEQUENCE84
   }
 ];
 
-let activePattern = 1; // default to Mixed weekend blocks
+let activePattern = 2; // default to Mixed weekend blocks
 
 function getWorkerFridayLeaning(globalIndex) {
   const p = PATTERNS[activePattern];
+
+  if (p.transitionDays && p.transitionSequence84 && globalIndex < p.transitionDays) {
+    return p.transitionSequence84[globalIndex % p.transitionSequence84.length];
+  }
 
   if (p.sequence84) {
     return p.sequence84[globalIndex % p.sequence84.length];
@@ -394,6 +444,7 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
   const compareContainer = document.getElementById("compareContainer");
   const variant = document.createElement("section");
   variant.className = "schedule-variant";
+  const p = PATTERNS[activePattern];
 
   const {
     scheduleByDate,
@@ -421,6 +472,9 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
 
   const totals = document.createElement("div");
   totals.className = "totals";
+  const transitionNote = p.transitionDays
+    ? `<div class="total-card breakdown-card"><div>Transition Phase</div><div class="total-value">Red border = manager-aligned first ${Math.round(p.transitionDays / 7)} weeks</div></div>`
+    : "";
   totals.innerHTML = `
     <div class="total-card aaron">
       <div>Aaron Shifts</div>
@@ -456,6 +510,7 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
       <div>Avg Hrs/Week (Aaron/Randall)</div>
       <div class="total-value">${aaronAvgHoursPerWeek}/${randallAvgHoursPerWeek}</div>
     </div>
+    ${transitionNote}
   `;
   totals.style.display = showPlanDetails ? "flex" : "none";
   variant.appendChild(totals);
@@ -501,6 +556,8 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
     for (let day = 1; day <= monthDays; day++) {
       const current = new Date(monthCursor.getFullYear(), monthCursor.getMonth(), day);
       const key = formatDate(current);
+      const dayIndex = Math.floor((current - startDate) / (1000 * 60 * 60 * 24));
+      const inTransition = Boolean(p.transitionDays && dayIndex >= 0 && dayIndex < p.transitionDays);
       const worker = scheduleByDate.get(key);
       const cell = document.createElement("div");
 
@@ -509,6 +566,10 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
         cell.innerHTML = `<span class="date">${day}</span><span class="worker">Aaron</span>`;
       } else if (worker === 1) {
         cell.className = "cell randall";
+        const strikeRandall = inTransition && RANDALL_VISUAL_STRIKE_DATES.has(key);
+        if (strikeRandall) {
+          cell.classList.add("randall-strike");
+        }
         cell.innerHTML = `<span class="date">${day}</span><span class="worker">Randall</span>`;
       } else if (worker === null) {
         cell.className = "cell off";
@@ -516,6 +577,10 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
       } else {
         cell.className = "cell empty";
         cell.innerHTML = `<span class="date">${day}</span><span class="worker">—</span>`;
+      }
+
+      if (inTransition) {
+        cell.classList.add("transition-phase");
       }
 
       grid.appendChild(cell);
