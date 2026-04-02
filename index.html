@@ -160,6 +160,17 @@
   }
   .pattern-btn:hover { border-color: #888; background: #f0f0f0; }
   .pattern-btn.active { border-color: #3a7bd5; background: #d9e8ff; font-weight: bold; }
+  #detailsToggle {
+    margin-bottom: 14px;
+    border-color: #6b7280;
+    background: #f3f4f6;
+    color: #1f2937;
+    font-weight: 600;
+  }
+  #detailsToggle:hover {
+    border-color: #4b5563;
+    background: #e5e7eb;
+  }
 </style>
 </head>
 <body>
@@ -167,15 +178,7 @@
 <h1>12-Month Schedule – Aaron & Randall</h1>
 
 <div class="pattern-toggle" id="patternToggle"></div>
-
-<div class="legend">
-  <div class="legend-swatches">
-    <div class="legend-item aaron">Aaron</div>
-    <div class="legend-item randall">Randall</div>
-    <div class="legend-item off">Off</div>
-  </div>
-  <button id="detailsToggle" class="pattern-btn" type="button">Hide Plan Details</button>
-</div>
+<button id="detailsToggle" class="pattern-btn" type="button">Hide Plan Details</button>
 
 <div id="compareContainer"></div>
 
@@ -208,13 +211,28 @@ const PATTERNS = [
     // Even cycle removes a Randall day; odd cycle removes an Aaron day.
     even: [null,1,1,1,0,0,0,1,1,1,1,0,0,0],
     odd:  [null,0,0,0,1,1,1,0,0,0,0,1,1,1]
+  },
+  {
+    label: "Manager Baseline",
+    desc: "Directly based on STE II rows in CURRENT Master Schedule(BLANK).csv, anchored at row 19 col G = Apr 9 for Aaron (84-day baseline repeated).",
+    sequence84: [
+      0,0,0,0,1,1,1,1,0,0,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1,
+      1,0,0,0,1,1,1,1,0,0,0,null,null,0,0,1,1,1,0,0,0,0,1,1,1,1,0,
+      0,0,1,1,1,0,0,0,0,1,1,1,null,0,0,0,1,1,1,0,0,0,null,1,1,1,1,
+      null,null
+    ]
   }
 ];
 
-let activePattern = 1; // default to Pattern 7
+let activePattern = 1; // default to Mixed weekend blocks
 
 function getWorkerFridayLeaning(globalIndex) {
   const p = PATTERNS[activePattern];
+
+  if (p.sequence84) {
+    return p.sequence84[globalIndex % p.sequence84.length];
+  }
+
   const cycle = Math.floor(globalIndex / 14);
   const dayInCycle = globalIndex % 14;
   return cycle % 2 === 0 ? p.even[dayInCycle] : p.odd[dayInCycle];
