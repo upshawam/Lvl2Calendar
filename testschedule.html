@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>12-Week Calendar – Aaron & Randall</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #fafafa;
+    color: #222;
+  }
+  h1 {
+    margin-bottom: 6px;
+  }
+  p {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  .totals {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .total-card {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px 12px;
+    background: #fff;
+    min-width: 150px;
+  }
+  .total-value {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .months {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    max-width: 1200px;
+  }
+  .month {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  .month-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .day-header {
+    font-weight: bold;
+    text-align: center;
+    padding: 6px 0;
+    background: #eee;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+  .cell {
+    border: 1px solid #ccc;
+    padding: 6px;
+    min-height: 62px;
+    font-size: 12px;
+    border-radius: 4px;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .empty {
+    background: #f3f3f3;
+    border-style: dashed;
+    color: #aaa;
+  }
+  .aaron {
+    background: #d9e8ff;
+  }
+  .randall {
+    background: #ffe4c4;
+  }
+  .off {
+    background: #f7f7f7;
+    color: #777;
+  }
+  .date {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 3px;
+    overflow-wrap: anywhere;
+  }
+  .worker {
+    font-size: 11px;
+    display: block;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+  .legend {
+    margin-bottom: 14px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  .schedule-variant {
+    margin-bottom: 24px;
+  }
+  .variant-title {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+  }
+  .variant-subtitle {
+    margin: 0 0 10px 0;
+    color: #555;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<h1>12-Week Calendar – Aaron & Randall</h1>
+<p>Starting Monday, May 4, 2026</p>
+
+<div class="legend">
+  <div class="legend-item aaron">Aaron</div>
+  <div class="legend-item randall">Randall</div>
+  <div class="legend-item off">Off</div>
+</div>
+
+<div id="compareContainer"></div>
+
+<script>
+// Start date (first Monday of May 2026)
+const startDate = new Date(2026, 4, 4); // May = 4
+
+const totalDays = 12 * 7; // 12 weeks
+const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const swapAssignments = true;
+
+// Base 14-day pattern (A=0, R=1, Off=null)
+const basePattern = [
+  0,    // Mon W1
+  0,    // Tue W1
+  null, // Wed W1 (extra A on even cycles)
+  1,    // Thu W1
+  1,    // Fri W1
+  0,    // Sat W1
+  1,    // Sun W1
+
+  1,    // Mon W2
+  null, // Tue W2 (extra R on odd cycles)
+  0,    // Wed W2
+  0,    // Thu W2
+  1,    // Fri W2
+  1,    // Sat W2
+  0     // Sun W2
+];
+
+function getWorkerFridayLeaning(globalIndex) {
+  const cycle = Math.floor(globalIndex / 14);
+  const dayInCycle = globalIndex % 14;
+
+  let worker = basePattern[dayInCycle];
+
+  // Even cycles → extra Aaron on day 2
+  if (cycle % 2 === 0 && dayInCycle === 2) worker = 0;
+
+  // Odd cycles → extra Randall on day 8
+  if (cycle % 2 === 1 && dayInCycle === 8) worker = 1;
+
+  // Friday-leaning off-days:
+  // Even cycles: move off from day 8 (Tue W2) to day 11 (Fri W2)
+  if (cycle % 2 === 0) {
+    if (dayInCycle === 8) worker = 1;
+    if (dayInCycle === 11) worker = null;
+  }
+
+  // Odd cycles: move off from day 2 (Wed W1) to day 4 (Fri W1)
+  if (cycle % 2 === 1) {
+    if (dayInCycle === 2) worker = 1;
+    if (dayInCycle === 4) worker = null;
+  }
+
+  return worker;
+}
+
+function getWorkerTwoWeekFlip(globalIndex) {
+  const block = Math.floor(globalIndex / 14); // 2-week block
+  const dayOfWeekMonStart = globalIndex % 7; // Mon=0 ... Sun=6
+  const person1Pattern = dayOfWeekMonStart <= 2 ? 0 : 1; // Mon-Wed vs Thu-Sun
+
+  if (block % 2 === 0) {
+    return person1Pattern; // Block 0,2,4
+  }
+
+  return person1Pattern === 0 ? 1 : 0; // Block 1,3,5 (flip)
+}
+
+function formatDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function getMonthName(d) {
+  return d.toLocaleString("en-US", { month: "long", year: "numeric" });
+}
+
+function daysInMonth(year, monthIndex) {
+  return new Date(year, monthIndex + 1, 0).getDate();
+}
+
+function applyWorkerSwap(worker) {
+  if (!swapAssignments) return worker;
+  if (worker === 0) return 1;
+  if (worker === 1) return 0;
+  return worker;
+}
+
+function buildSchedule(getWorkerFn) {
+  const scheduleByDate = new Map();
+  const workersByIndex = [];
+  let aaronCount = 0;
+  let randallCount = 0;
+  let offCount = 0;
+  let aaronWeekdayCount = 0;
+  let aaronWeekendCount = 0;
+  let randallWeekdayCount = 0;
+  let randallWeekendCount = 0;
+
+  for (let day = 0; day < totalDays; day++) {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + day);
+    const key = formatDate(date);
+    const worker = applyWorkerSwap(getWorkerFn(day));
+    const dayOfWeek = date.getDay(); // Sun=0 ... Sat=6
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+    scheduleByDate.set(key, worker);
+    workersByIndex.push(worker);
+
+    if (worker === 0) {
+      aaronCount++;
+      if (isWeekend) aaronWeekendCount++;
+      else aaronWeekdayCount++;
+    }
+    else if (worker === 1) {
+      randallCount++;
+      if (isWeekend) randallWeekendCount++;
+      else randallWeekdayCount++;
+    }
+    else offCount++;
+  }
+
+  return {
+    scheduleByDate,
+    workersByIndex,
+    aaronCount,
+    randallCount,
+    offCount,
+    aaronWeekdayCount,
+    aaronWeekendCount,
+    randallWeekdayCount,
+    randallWeekendCount
+  };
+}
+
+function maxConsecutiveWork(workersByIndex, workerId) {
+  let maxStreak = 0;
+  let currentStreak = 0;
+
+  for (const worker of workersByIndex) {
+    if (worker === workerId) {
+      currentStreak++;
+      if (currentStreak > maxStreak) maxStreak = currentStreak;
+    } else {
+      currentStreak = 0;
+    }
+  }
+
+  return maxStreak;
+}
+
+function renderVariant(titleText, subtitleText, getWorkerFn) {
+  const compareContainer = document.getElementById("compareContainer");
+  const variant = document.createElement("section");
+  variant.className = "schedule-variant";
+
+  const title = document.createElement("h2");
+  title.className = "variant-title";
+  title.textContent = titleText;
+  variant.appendChild(title);
+
+  const subtitle = document.createElement("p");
+  subtitle.className = "variant-subtitle";
+  subtitle.textContent = subtitleText;
+  variant.appendChild(subtitle);
+
+  const {
+    scheduleByDate,
+    workersByIndex,
+    aaronCount,
+    randallCount,
+    offCount,
+    aaronWeekdayCount,
+    aaronWeekendCount,
+    randallWeekdayCount,
+    randallWeekendCount
+  } = buildSchedule(getWorkerFn);
+  const aaronMaxStreak = maxConsecutiveWork(workersByIndex, 0);
+  const randallMaxStreak = maxConsecutiveWork(workersByIndex, 1);
+  const showFairnessCounters = titleText.includes("Variant 1");
+
+  const totals = document.createElement("div");
+  totals.className = "totals";
+  totals.innerHTML = `
+    <div class="total-card aaron">
+      <div>Aaron Shifts</div>
+      <div class="total-value">${aaronCount}</div>
+    </div>
+    <div class="total-card randall">
+      <div>Randall Shifts</div>
+      <div class="total-value">${randallCount}</div>
+    </div>
+    <div class="total-card off">
+      <div>Off Days</div>
+      <div class="total-value">${offCount}</div>
+    </div>
+    <div class="total-card">
+      <div>Max Consecutive (Aaron/Randall)</div>
+      <div class="total-value">${aaronMaxStreak}/${randallMaxStreak}</div>
+    </div>
+    ${showFairnessCounters ? `
+    <div class="total-card">
+      <div>Aaron Weekday/Weekend</div>
+      <div class="total-value">${aaronWeekdayCount}/${aaronWeekendCount}</div>
+    </div>
+    <div class="total-card">
+      <div>Randall Weekday/Weekend</div>
+      <div class="total-value">${randallWeekdayCount}/${randallWeekendCount}</div>
+    </div>
+    ` : ""}
+  `;
+  variant.appendChild(totals);
+
+  const monthsContainer = document.createElement("div");
+  monthsContainer.className = "months";
+
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + totalDays - 1);
+
+  let monthCursor = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+  const lastMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+
+  while (monthCursor <= lastMonth) {
+    const monthCard = document.createElement("section");
+    monthCard.className = "month";
+
+    const monthTitle = document.createElement("div");
+    monthTitle.className = "month-title";
+    monthTitle.textContent = getMonthName(monthCursor);
+    monthCard.appendChild(monthTitle);
+
+    const grid = document.createElement("div");
+    grid.className = "calendar";
+
+    dayNames.forEach(name => {
+      const header = document.createElement("div");
+      header.className = "day-header";
+      header.textContent = name;
+      grid.appendChild(header);
+    });
+
+    const firstOfMonth = new Date(monthCursor.getFullYear(), monthCursor.getMonth(), 1);
+    const leadingBlanks = firstOfMonth.getDay();
+
+    for (let i = 0; i < leadingBlanks; i++) {
+      const blank = document.createElement("div");
+      blank.className = "cell empty";
+      grid.appendChild(blank);
+    }
+
+    const monthDays = daysInMonth(monthCursor.getFullYear(), monthCursor.getMonth());
+    for (let day = 1; day <= monthDays; day++) {
+      const current = new Date(monthCursor.getFullYear(), monthCursor.getMonth(), day);
+      const key = formatDate(current);
+      const worker = scheduleByDate.get(key);
+      const cell = document.createElement("div");
+
+      if (worker === 0) {
+        cell.className = "cell aaron";
+        cell.innerHTML = `<span class="date">${day}</span><span class="worker">Aaron</span>`;
+      } else if (worker === 1) {
+        cell.className = "cell randall";
+        cell.innerHTML = `<span class="date">${day}</span><span class="worker">Randall</span>`;
+      } else if (worker === null) {
+        cell.className = "cell off";
+        cell.innerHTML = `<span class="date">${day}</span><span class="worker">Off</span>`;
+      } else {
+        cell.className = "cell empty";
+        cell.innerHTML = `<span class="date">${day}</span><span class="worker">—</span>`;
+      }
+
+      grid.appendChild(cell);
+    }
+
+    const totalCells = leadingBlanks + monthDays;
+    const trailingBlanks = (7 - (totalCells % 7)) % 7;
+    for (let i = 0; i < trailingBlanks; i++) {
+      const blank = document.createElement("div");
+      blank.className = "cell empty";
+      grid.appendChild(blank);
+    }
+
+    monthCard.appendChild(grid);
+    monthsContainer.appendChild(monthCard);
+
+    monthCursor = new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 1);
+  }
+
+  variant.appendChild(monthsContainer);
+  compareContainer.appendChild(variant);
+}
+
+renderVariant(
+  "Variant 1: Friday-Leaning Off-Day",
+  "Balanced at 39/39 with 6 off days and Friday-leaning off-day placement.",
+  getWorkerFridayLeaning
+);
+
+renderVariant(
+  "Variant 2: Proposed 2-Week Flip (Mon-Wed vs Thu-Sun)",
+  "Same weekly day split, flipped every 2 weeks for comparison.",
+  getWorkerTwoWeekFlip
+);
+</script>
+
+</body>
+</html>
