@@ -115,6 +115,14 @@
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .legend-swatches {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
   }
   .legend-item {
     border: 1px solid #ccc;
@@ -157,14 +165,16 @@
 <body>
 
 <h1>12-Month Schedule – Aaron & Randall</h1>
-<p>Apr 9, 2026 – Apr 7, 2027 &nbsp;|&nbsp; 26 two-week cycles &nbsp;|&nbsp; 169/169/26 &nbsp;|&nbsp; Select a pattern below to compare</p>
 
 <div class="pattern-toggle" id="patternToggle"></div>
 
 <div class="legend">
-  <div class="legend-item aaron">Aaron</div>
-  <div class="legend-item randall">Randall</div>
-  <div class="legend-item off">Off</div>
+  <div class="legend-swatches">
+    <div class="legend-item aaron">Aaron</div>
+    <div class="legend-item randall">Randall</div>
+    <div class="legend-item off">Off</div>
+  </div>
+  <button id="detailsToggle" class="pattern-btn" type="button">Hide Plan Details</button>
 </div>
 
 <div id="compareContainer"></div>
@@ -174,59 +184,34 @@ const startDate = new Date(2026, 3, 9); // Apr 9, 2026
 
 const totalDays = 364; // 26 exact 14-day cycles = perfectly balanced year
 const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-// Valid patterns found by brute-force search plus Randall's proposed plan.
-// Each has: even/odd 14-day arrays, off-day weekdays, max streak, min gap.
+// Selected comparison patterns only.
 const PATTERNS = [
   {
-    label: "Pattern 1",
-    desc: "Off: Fri + Sat · Max streak 3/3 · Blocks of 3",
-    even: [0,null,1,0,0,0,1,1,1,0,0,0,1,1],
-    odd:  [1,0,null,1,1,1,0,0,0,1,1,1,0,0]
-  },
-  {
-    label: "Pattern 2",
-    desc: "Off: Fri + Sat · Max streak 2/2 · Only ever 2 days on at a time",
-    even: [0,null,1,0,0,1,1,0,0,1,1,0,0,1],
-    odd:  [1,0,null,1,1,0,0,1,1,0,0,1,1,0]
-  },
-  {
-    label: "Pattern 3",
-    desc: "Off: Fri + Mon · Max streak 3/3 · Aaron starts first 3",
-    even: [0,null,1,1,1,0,0,0,1,1,0,0,0,1],
-    odd:  [1,0,0,0,null,1,1,1,0,0,1,1,1,0]
-  },
-  {
-    label: "Pattern 4",
-    desc: "Off: Fri + Mon · Max streak 3/3 · Randall starts first 3",
-    even: [1,null,0,0,0,1,1,0,0,0,1,1,1,0],
-    odd:  [0,1,1,1,null,0,0,1,1,1,0,0,0,1]
-  },
-  {
-    label: "Pattern 5",
-    desc: "Off: Fri + Mon · Max streak 3/3 · Mixed alternating start",
+    label: "Full weekend blocks",
+    desc: "Off: Fri + Mon · Max streak 3/3 · Pattern 5 structure with stronger full-weekend grouping",
     even: [1,null,0,0,0,1,1,0,0,1,1,1,0,0],
     odd:  [0,1,1,1,null,0,0,1,1,0,0,0,1,1]
   },
   {
-    label: "Randalls plan updated",
+    label: "Mixed weekend blocks",
+    desc: "Best overall balance: 169/169/26, equal weekend/weekday split, max 3-day runs, and straightforward repeating cadence.",
+    // Thu Fri Sat Sun Mon Tue Wed Thu Fri Sat Sun Mon Tue Wed
+    // One Friday off per cycle; even/odd cycles mirror for clean fairness.
+    even: [0,0,0,1,1,1,0,0,null,1,1,1,0,0],
+    odd:  [1,1,1,0,0,0,1,1,null,0,0,0,1,1]
+  },
+  {
+    label: "Randall's plan updated",
     desc: "Mon–Wed vs Thu–Sun style with 26 off days added to balance totals/fairness. Produces 169/169/26 and balanced weekday/weekend counts, but still allows longer 4-day runs.",
     // Thu Fri Sat Sun Mon Tue Wed Thu Fri Sat Sun Mon Tue Wed
     // Updated from Randall's plan: add one off-day each cycle at day 0 for balance.
     // Even cycle removes a Randall day; odd cycle removes an Aaron day.
     even: [null,1,1,1,0,0,0,1,1,1,1,0,0,0],
     odd:  [null,0,0,0,1,1,1,0,0,0,0,1,1,1]
-  },
-  {
-    label: "Pattern 7 (Copilot optimized)",
-    desc: "Best overall balance: 169/169/26, equal weekend/weekday split, max 3-day runs, and straightforward repeating cadence.",
-    // Thu Fri Sat Sun Mon Tue Wed Thu Fri Sat Sun Mon Tue Wed
-    // One Friday off per cycle; even/odd cycles mirror for clean fairness.
-    even: [0,0,0,1,1,1,0,0,null,1,1,1,0,0],
-    odd:  [1,1,1,0,0,0,1,1,null,0,0,0,1,1]
   }
 ];
 
-let activePattern = 1; // default to Pattern 2 (best)
+let activePattern = 1; // default to Pattern 7
 
 function getWorkerFridayLeaning(globalIndex) {
   const p = PATTERNS[activePattern];
@@ -330,16 +315,6 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
   const variant = document.createElement("section");
   variant.className = "schedule-variant";
 
-  const title = document.createElement("h2");
-  title.className = "variant-title";
-  title.textContent = titleText;
-  variant.appendChild(title);
-
-  const subtitle = document.createElement("p");
-  subtitle.className = "variant-subtitle";
-  subtitle.textContent = subtitleText;
-  variant.appendChild(subtitle);
-
   const {
     scheduleByDate,
     workersByIndex,
@@ -402,6 +377,7 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
       <div class="total-value">${randallAvgHoursPerWeek}</div>
     </div>
   `;
+  totals.style.display = showPlanDetails ? "flex" : "none";
   variant.appendChild(totals);
 
   const monthsContainer = document.createElement("div");
@@ -491,9 +467,9 @@ function redraw() {
     p.desc,
     getWorkerFridayLeaning
   );
-  const info = document.getElementById('patternInfo');
-  if (info) info.textContent = p.desc;
 }
+
+let showPlanDetails = true;
 
 // Initial render
 redraw();
@@ -513,12 +489,14 @@ PATTERNS.forEach((p, i) => {
   toggleEl.appendChild(btn);
 });
 
-// Pattern description line beneath toggle
-const info = document.createElement('p');
-info.id = 'patternInfo';
-info.style.cssText = 'margin:-8px 0 14px 0;color:#444;font-size:13px;font-style:italic;';
-info.textContent = PATTERNS[activePattern].desc;
-toggleEl.insertAdjacentElement('afterend', info);
+const detailsToggle = document.getElementById('detailsToggle');
+detailsToggle.addEventListener('click', () => {
+  showPlanDetails = !showPlanDetails;
+  detailsToggle.textContent = showPlanDetails ? 'Hide Plan Details' : 'Show Plan Details';
+  document.querySelectorAll('.totals').forEach((el) => {
+    el.style.display = showPlanDetails ? 'flex' : 'none';
+  });
+});
 </script>
 
 </body>
