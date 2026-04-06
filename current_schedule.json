@@ -1,0 +1,1834 @@
+{
+  "name": "Current Schedule",
+  "description": "Canonical day-by-day schedule derived from the verified current schedule shown in index.html.",
+  "startDate": "2026-04-09",
+  "endDate": "2027-04-07",
+  "totalDays": 364,
+  "counts": {
+    "aaron": 170,
+    "randall": 162,
+    "off": 32
+  },
+  "assignments": [
+    {
+      "date": "2026-04-09",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-10",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-11",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-04-12",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-04-13",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-14",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-15",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-04-16",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-04-17",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-18",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-19",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-04-20",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-04-21",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-22",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-23",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-24",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-04-25",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-04-26",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-04-27",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-04-28",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-29",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-04-30",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-01",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-02",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-03",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-04",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-05",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-06",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-07",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-08",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-05-09",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-10",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-11",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-12",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-13",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-14",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-15",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-16",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-17",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-18",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-19",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-20",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-21",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-22",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-05-23",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-24",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-25",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-26",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-27",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-28",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-29",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-05-30",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-05-31",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-01",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-02",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-03",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-04",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-05",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-06-06",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-07",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-08",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-09",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-10",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-11",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-12",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-13",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-14",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-15",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-16",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-17",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-18",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-19",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-06-20",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-21",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-22",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-23",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-24",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-25",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-26",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-06-27",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-28",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-29",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-06-30",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-01",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-02",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-03",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-07-04",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-05",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-06",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-07",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-08",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-09",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-10",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-11",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-12",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-13",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-14",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-15",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-16",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-17",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-07-18",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-19",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-20",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-21",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-22",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-23",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-24",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-25",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-26",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-27",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-07-28",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-29",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-30",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-07-31",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-08-01",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-02",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-03",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-04",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-05",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-06",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-07",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-08",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-09",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-10",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-11",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-12",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-13",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-14",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-08-15",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-16",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-17",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-18",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-19",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-20",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-21",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-22",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-23",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-24",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-25",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-26",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-27",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-08-28",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-08-29",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-30",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-08-31",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-01",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-02",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-03",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-04",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-05",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-06",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-07",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-08",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-09",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-10",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-11",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-09-12",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-13",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-14",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-15",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-16",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-17",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-18",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-19",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-20",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-21",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-22",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-23",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-24",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-25",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-09-26",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-27",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-28",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-09-29",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-09-30",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-01",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-02",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-03",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-04",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-05",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-06",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-07",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-08",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-09",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-10-10",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-11",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-12",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-13",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-14",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-15",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-16",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-17",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-18",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-19",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-20",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-21",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-22",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-23",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-10-24",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-25",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-26",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-27",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-28",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-10-29",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-30",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-10-31",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-01",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-02",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-03",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-04",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-05",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-06",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-11-07",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-08",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-09",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-10",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-11",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-12",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-13",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-14",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-15",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-16",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-17",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-18",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-19",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-20",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-11-21",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-22",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-23",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-24",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-25",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-26",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-27",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-11-28",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-29",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-11-30",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-01",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-02",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-03",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-04",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-12-05",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-06",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-07",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-08",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-09",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-10",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-11",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-12",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-13",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-14",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-15",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-16",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-17",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-18",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2026-12-19",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-20",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-21",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-22",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-23",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-24",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-25",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-26",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-27",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-28",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2026-12-29",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-30",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2026-12-31",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-01",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2027-01-02",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-03",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-04",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-05",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-06",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-07",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-08",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-09",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-10",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-11",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-12",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-13",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-14",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-15",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2027-01-16",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-17",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-18",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-19",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-20",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-21",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-22",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-23",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-24",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-25",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-26",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-27",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-28",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-01-29",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2027-01-30",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-01-31",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-01",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-02",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-03",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-04",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-05",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-06",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-07",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-08",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-09",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-10",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-11",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-12",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2027-02-13",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-14",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-15",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-16",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-17",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-18",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-19",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-20",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-21",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-22",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-23",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-24",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-25",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-02-26",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2027-02-27",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-02-28",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-01",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-02",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-03",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-04",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-05",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-06",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-07",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-08",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-09",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-10",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-11",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-12",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-13",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-14",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-15",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-16",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-17",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-18",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-19",
+      "worker": "off",
+      "workerId": null
+    },
+    {
+      "date": "2027-03-20",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-21",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-22",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-23",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-24",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-25",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-26",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-27",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-28",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-29",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-03-30",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-03-31",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-04-01",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-04-02",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-04-03",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-04-04",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-04-05",
+      "worker": "aaron",
+      "workerId": 0
+    },
+    {
+      "date": "2027-04-06",
+      "worker": "randall",
+      "workerId": 1
+    },
+    {
+      "date": "2027-04-07",
+      "worker": "randall",
+      "workerId": 1
+    }
+  ]
+}

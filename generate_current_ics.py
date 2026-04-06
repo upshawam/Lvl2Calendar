@@ -34,7 +34,7 @@ def make_ics(worker_id: int, name: str, file_name: str) -> None:
             f"DTSTAMP:{start:%Y%m%d}T000000Z",
             f"DTSTART;VALUE=DATE:{shift_date:%Y%m%d}",
             f"DTEND;VALUE=DATE:{next_date:%Y%m%d}",
-            f"SUMMARY:{name} Work Shift (Current Schedule)",
+            f"SUMMARY:{name}: STE II",
             "END:VEVENT",
         ])
 
