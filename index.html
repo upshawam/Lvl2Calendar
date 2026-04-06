@@ -169,17 +169,6 @@
     color: #555;
     font-size: 13px;
   }
-  .pattern-toggle {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-  }
-  .toggle-hint {
-    margin: 0 0 12px 0;
-    font-size: 12px;
-    color: #555;
-  }
   .pattern-btn {
     padding: 8px 14px;
     border: 1px solid #9ca3af;
@@ -219,15 +208,24 @@
     border-color: #4b5563;
     background: #e5e7eb;
   }
+  .calendar-links {
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  .calendar-links a {
+    margin-right: 12px;
+  }
 </style>
 </head>
 <body>
 
 <h1>12-Month Schedule – Aaron & Randall</h1>
 
-<div class="pattern-toggle" id="patternToggle"></div>
-<p class="toggle-hint">Click a schedule tab to view different schedules.</p>
-<button id="detailsToggle" class="pattern-btn" type="button">Hide Plan Details</button>
+<div class="calendar-links">
+  <strong>Calendar Subscribe Links:</strong>
+  <a href="https://raw.githubusercontent.com/upshawam/Lvl2Calendar/main/aaron_current_schedule.ics" target="_blank" rel="noopener noreferrer">Aaron ICS</a>
+  <a href="https://raw.githubusercontent.com/upshawam/Lvl2Calendar/main/randall_current_schedule.ics" target="_blank" rel="noopener noreferrer">Randall ICS</a>
+</div>
 
 <div id="compareContainer"></div>
 
@@ -245,36 +243,16 @@ const RANDALL_VISUAL_STRIKE_DATES = new Set([
   "2026-04-21",
   "2026-04-22"
 ]);
-const MANAGER_SEQUENCE84 = [
-  0,0,0,0,1,1,1,1,0,0,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,1,1,1,
-  1,0,0,0,1,1,1,1,0,0,0,null,null,0,0,1,1,1,0,0,0,0,1,1,1,1,0,
-  0,0,1,1,1,0,0,0,0,1,1,1,null,0,0,0,1,1,1,0,0,0,null,1,1,1,1,
-  null,null
+const CURRENT_BASELINE_SEQUENCE364 = [
+  0,0,null,null,0,0,null,null,0,0,null,null,0,0,0,null,null,null,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,1,0,0,0,1,1
 ];
+const MANAGER_SEQUENCE84 = CURRENT_BASELINE_SEQUENCE364.slice(0, 84);
 // Selected comparison patterns only.
 const PATTERNS = [
   {
-    label: "Proposed Schdeule",
-    desc: "Off: Fri + Mon with 2 added low-impact workdays · 170/170/24 · Pattern 5 structure with stronger full-weekend grouping",
-    even: [1,null,0,0,0,1,1,0,0,1,1,1,0,0],
-    odd:  [0,1,1,1,null,0,0,1,1,0,0,0,1,1],
-    overrides: {
-      "2026-04-10": 1,
-      "2026-05-25": 0
-    }
-  },
-  {
-    label: "Proposed Schedule with Transition",
-    desc: "First 4 weeks follow Manager Baseline, then shifts into full-weekend cadence for the rest of the year · 170/170/24.",
-    transitionDays: 28,
-    transitionSequence84: MANAGER_SEQUENCE84,
-    even: [1,null,0,0,0,1,1,0,0,1,1,1,0,0],
-    odd:  [0,1,1,1,null,0,0,1,1,0,0,0,1,1]
-  },
-  {
-    label: "Current Baseline Schedule",
-    desc: "Directly based on STE II rows in CURRENT Master Schedule(BLANK).csv, anchored at row 19 col G = Apr 9 for Aaron (84-day baseline repeated).",
-    sequence84: MANAGER_SEQUENCE84
+    label: "Current Schedule",
+    desc: "Directly based on the updated monthly STE II CSV files in Full Calendar (Apr 2026 through Apr 2027), merged into one day-by-day baseline.",
+    sequence364: CURRENT_BASELINE_SEQUENCE364
   }
 ];
 
@@ -285,6 +263,10 @@ function getWorkerFridayLeaning(globalIndex) {
 
   if (p.transitionDays && p.transitionSequence84 && globalIndex < p.transitionDays) {
     return p.transitionSequence84[globalIndex % p.transitionSequence84.length];
+  }
+
+  if (p.sequence364) {
+    return p.sequence364[globalIndex];
   }
 
   if (p.sequence84) {
@@ -328,8 +310,30 @@ function daysInMonth(year, monthIndex) {
 }
 
 function buildSchedule(getWorkerFn) {
+  const p = PATTERNS[activePattern];
   const scheduleByDate = new Map();
   const workersByIndex = [];
+
+  for (let day = 0; day < totalDays; day++) {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + day);
+    const key = formatDate(date);
+    // Pattern-driven assignment (even/odd cycles)
+    const worker = applyPatternOverride(getWorkerFn(day), date);
+
+    scheduleByDate.set(key, worker);
+    workersByIndex.push(worker);
+  }
+
+  return {
+    scheduleByDate,
+    workersByIndex
+  };
+}
+
+function summarizeMetrics(workersByIndex, startIndex = 0) {
+  const windowWorkers = workersByIndex.slice(startIndex);
+  const metricDays = windowWorkers.length;
   let aaronCount = 0;
   let randallCount = 0;
   let offCount = 0;
@@ -338,42 +342,49 @@ function buildSchedule(getWorkerFn) {
   let aaronWeekdayCount = 0;
   let randallWeekdayCount = 0;
 
-  for (let day = 0; day < totalDays; day++) {
+  for (let i = startIndex; i < workersByIndex.length; i++) {
+    const worker = workersByIndex[i];
     const date = new Date(startDate);
-    date.setDate(startDate.getDate() + day);
-    const key = formatDate(date);
-    // Pattern-driven assignment (even/odd cycles)
-    const worker = applyPatternOverride(getWorkerFn(day), date);
+    date.setDate(startDate.getDate() + i);
     const dayOfWeek = date.getDay(); // Sun=0 ... Sat=6
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
     const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
-
-    scheduleByDate.set(key, worker);
-    workersByIndex.push(worker);
 
     if (worker === 0) {
       aaronCount++;
       if (isWeekend) aaronWeekendCount++;
       if (isWeekday) aaronWeekdayCount++;
-    }
-    else if (worker === 1) {
+    } else if (worker === 1) {
       randallCount++;
       if (isWeekend) randallWeekendCount++;
       if (isWeekday) randallWeekdayCount++;
+    } else {
+      offCount++;
     }
-    else offCount++;
   }
 
+  const totalWeeks = metricDays / 7;
+  const hoursPerShift = 12;
+
   return {
-    scheduleByDate,
-    workersByIndex,
+    metricDays,
     aaronCount,
     randallCount,
     offCount,
     aaronWeekendCount,
     randallWeekendCount,
     aaronWeekdayCount,
-    randallWeekdayCount
+    randallWeekdayCount,
+    aaronMaxStreak: maxConsecutiveWork(windowWorkers, 0),
+    randallMaxStreak: maxConsecutiveWork(windowWorkers, 1),
+    aaronThreeDayOffBlocks: countExactOffBlocks(windowWorkers, 0, 3),
+    randallThreeDayOffBlocks: countExactOffBlocks(windowWorkers, 1, 3),
+    aaronFourDayOffBlocks: countExactOffBlocks(windowWorkers, 0, 4),
+    randallFourDayOffBlocks: countExactOffBlocks(windowWorkers, 1, 4),
+    aaronFivePlusDayOffBlocks: countAtLeastOffBlocks(windowWorkers, 0, 5),
+    randallFivePlusDayOffBlocks: countAtLeastOffBlocks(windowWorkers, 1, 5),
+    aaronAvgHoursPerWeek: ((aaronCount * hoursPerShift) / totalWeeks).toFixed(1),
+    randallAvgHoursPerWeek: ((randallCount * hoursPerShift) / totalWeeks).toFixed(1)
   };
 }
 
@@ -433,72 +444,47 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
 
   const {
     scheduleByDate,
-    workersByIndex,
-    aaronCount,
-    randallCount,
-    offCount,
-    aaronWeekendCount,
-    randallWeekendCount,
-    aaronWeekdayCount,
-    randallWeekdayCount
+    workersByIndex
   } = buildSchedule(getWorkerFn);
-  const aaronMaxStreak = maxConsecutiveWork(workersByIndex, 0);
-  const randallMaxStreak = maxConsecutiveWork(workersByIndex, 1);
-  const aaronThreeDayOffBlocks = countExactOffBlocks(workersByIndex, 0, 3);
-  const aaronFourDayOffBlocks = countExactOffBlocks(workersByIndex, 0, 4);
-  const aaronFivePlusDayOffBlocks = countAtLeastOffBlocks(workersByIndex, 0, 5);
-  const randallThreeDayOffBlocks = countExactOffBlocks(workersByIndex, 1, 3);
-  const randallFourDayOffBlocks = countExactOffBlocks(workersByIndex, 1, 4);
-  const randallFivePlusDayOffBlocks = countAtLeastOffBlocks(workersByIndex, 1, 5);
-  const totalWeeks = totalDays / 7;
-  const hoursPerShift = 12;
-  const aaronAvgHoursPerWeek = ((aaronCount * hoursPerShift) / totalWeeks).toFixed(1);
-  const randallAvgHoursPerWeek = ((randallCount * hoursPerShift) / totalWeeks).toFixed(1);
+  const fullMetrics = summarizeMetrics(workersByIndex, 0);
+  const mayStartDate = new Date(2026, 4, 1);
+  const mayStartIndex = Math.max(0, Math.floor((mayStartDate - startDate) / (1000 * 60 * 60 * 24)));
+  const mayForwardMetrics = summarizeMetrics(workersByIndex, mayStartIndex);
 
   const totals = document.createElement("div");
   totals.className = "totals";
-  const transitionNote = p.transitionDays
-    ? `<div class="total-card breakdown-card"><div>Transition Phase</div><div class="total-value">Red border = manager-aligned first ${Math.round(p.transitionDays / 7)} weeks</div></div>`
-    : "";
-  totals.innerHTML = `
-    <div class="total-card aaron">
-      <div>Aaron Shifts</div>
-      <div class="total-value">${aaronCount}</div>
-    </div>
-    <div class="total-card randall">
-      <div>Randall Shifts</div>
-      <div class="total-value">${randallCount}</div>
-    </div>
-    <div class="total-card off">
-      <div>Both Off</div>
-      <div class="total-value">${offCount}</div>
-    </div>
-    <div class="total-card">
-      <div>Max Consecutive (Aaron/Randall)</div>
-      <div class="total-value">${aaronMaxStreak}/${randallMaxStreak}</div>
-    </div>
+  const fullRangeCard = `
     <div class="total-card breakdown-card">
-      <div>Off-Block Breakdown (Aaron/Randall)</div>
-      <div class="total-value">3-Day Offs: ${aaronThreeDayOffBlocks}/${randallThreeDayOffBlocks}</div>
-      <div class="total-value">4-Day Offs: ${aaronFourDayOffBlocks}/${randallFourDayOffBlocks}</div>
-      <div class="total-value">5+ Day Offs: ${aaronFivePlusDayOffBlocks}/${randallFivePlusDayOffBlocks}</div>
+      <div>Full Range Metrics</div>
+      <div class="total-value">Shifts (Aaron/Randall): ${fullMetrics.aaronCount}/${fullMetrics.randallCount}</div>
+      <div class="total-value">Both Off: ${fullMetrics.offCount}</div>
+      <div class="total-value">Max Consecutive: ${fullMetrics.aaronMaxStreak}/${fullMetrics.randallMaxStreak}</div>
+      <div class="total-value">3-Day Offs: ${fullMetrics.aaronThreeDayOffBlocks}/${fullMetrics.randallThreeDayOffBlocks}</div>
+      <div class="total-value">4-Day Offs: ${fullMetrics.aaronFourDayOffBlocks}/${fullMetrics.randallFourDayOffBlocks}</div>
+      <div class="total-value">5+ Day Offs: ${fullMetrics.aaronFivePlusDayOffBlocks}/${fullMetrics.randallFivePlusDayOffBlocks}</div>
+      <div class="total-value">Weekend Shifts: ${fullMetrics.aaronWeekendCount}/${fullMetrics.randallWeekendCount}</div>
+      <div class="total-value">Weekday Shifts: ${fullMetrics.aaronWeekdayCount}/${fullMetrics.randallWeekdayCount}</div>
+      <div class="total-value">Avg Hrs/Week: ${fullMetrics.aaronAvgHoursPerWeek}/${fullMetrics.randallAvgHoursPerWeek}</div>
     </div>
-    <div class="total-card breakdown-card">
-      <div>Weekend Shifts (Aaron/Randall)</div>
-      <div class="total-value">${aaronWeekendCount}/${randallWeekendCount}</div>
-    </div>
-    <div class="total-card breakdown-card">
-      <div>Weekday Shifts (Aaron/Randall)</div>
-      <div class="total-value">${aaronWeekdayCount}/${randallWeekdayCount}</div>
-    </div>
-    <div class="total-card breakdown-card">
-      <div>Avg Hrs/Week (Aaron/Randall)</div>
-      <div class="total-value">${aaronAvgHoursPerWeek}/${randallAvgHoursPerWeek}</div>
-    </div>
-    ${transitionNote}
   `;
-  totals.style.display = showPlanDetails ? "flex" : "none";
-  variant.appendChild(totals);
+  const mayForwardCard = `
+    <div class="total-card breakdown-card">
+      <div>May Forward Metrics</div>
+      <div class="total-value">Shifts (Aaron/Randall): ${mayForwardMetrics.aaronCount}/${mayForwardMetrics.randallCount}</div>
+      <div class="total-value">Both Off: ${mayForwardMetrics.offCount}</div>
+      <div class="total-value">Max Consecutive: ${mayForwardMetrics.aaronMaxStreak}/${mayForwardMetrics.randallMaxStreak}</div>
+      <div class="total-value">3-Day Offs: ${mayForwardMetrics.aaronThreeDayOffBlocks}/${mayForwardMetrics.randallThreeDayOffBlocks}</div>
+      <div class="total-value">4-Day Offs: ${mayForwardMetrics.aaronFourDayOffBlocks}/${mayForwardMetrics.randallFourDayOffBlocks}</div>
+      <div class="total-value">5+ Day Offs: ${mayForwardMetrics.aaronFivePlusDayOffBlocks}/${mayForwardMetrics.randallFivePlusDayOffBlocks}</div>
+      <div class="total-value">Weekend Shifts: ${mayForwardMetrics.aaronWeekendCount}/${mayForwardMetrics.randallWeekendCount}</div>
+      <div class="total-value">Weekday Shifts: ${mayForwardMetrics.aaronWeekdayCount}/${mayForwardMetrics.randallWeekdayCount}</div>
+      <div class="total-value">Avg Hrs/Week: ${mayForwardMetrics.aaronAvgHoursPerWeek}/${mayForwardMetrics.randallAvgHoursPerWeek}</div>
+    </div>
+  `;
+  totals.innerHTML = `
+    ${fullRangeCard}
+    ${mayForwardCard}
+  `;
 
   const monthsContainer = document.createElement("div");
   monthsContainer.className = "months";
@@ -599,34 +585,8 @@ function redraw() {
   );
 }
 
-let showPlanDetails = true;
-
 // Initial render
 redraw();
-
-// Build toggle buttons
-const toggleEl = document.getElementById('patternToggle');
-PATTERNS.forEach((p, i) => {
-  const btn = document.createElement('button');
-  btn.className = 'pattern-btn' + (i === activePattern ? ' active' : '');
-  btn.textContent = p.label;
-  btn.title = p.desc;
-  btn.addEventListener('click', () => {
-    activePattern = i;
-    document.querySelectorAll('.pattern-btn').forEach((b, j) => b.classList.toggle('active', j === i));
-    redraw();
-  });
-  toggleEl.appendChild(btn);
-});
-
-const detailsToggle = document.getElementById('detailsToggle');
-detailsToggle.addEventListener('click', () => {
-  showPlanDetails = !showPlanDetails;
-  detailsToggle.textContent = showPlanDetails ? 'Hide Plan Details' : 'Show Plan Details';
-  document.querySelectorAll('.totals').forEach((el) => {
-    el.style.display = showPlanDetails ? 'flex' : 'none';
-  });
-});
 </script>
 
 </body>
