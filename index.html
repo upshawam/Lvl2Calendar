@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -113,6 +114,11 @@
     white-space: nowrap;
     overflow: hidden;
   }
+  .cell.current-day {
+    outline: 2px solid #16a34a;
+    outline-offset: -2px;
+    box-shadow: inset 0 0 0 1px #16a34a;
+  }
   .off .worker {
     white-space: normal;
     overflow-wrap: anywhere;
@@ -214,6 +220,45 @@
   }
   .calendar-links a {
     margin-right: 12px;
+  }
+  @media (max-width: 768px) {
+    body {
+      padding: 12px;
+    }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    .calendar-links {
+      margin-bottom: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .months {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .month {
+      padding: 8px;
+    }
+    .month-title {
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .day-header {
+      font-size: 10px;
+      padding: 4px 0;
+    }
+    .cell {
+      min-height: 54px;
+      padding: 4px;
+      font-size: 11px;
+    }
+    .worker {
+      font-size: 10px;
+      white-space: normal;
+      line-height: 1.15;
+    }
   }
 </style>
 </head>
@@ -492,16 +537,34 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
   const endDate = new Date(startDate);
   endDate.setDate(startDate.getDate() + totalDays - 1);
 
-  let monthCursor = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+  const today = new Date();
+  const todayKey = formatDate(today);
+  const firstMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
   const lastMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+  const monthStarts = [];
 
+  let monthCursor = new Date(firstMonth);
   while (monthCursor <= lastMonth) {
+    monthStarts.push(new Date(monthCursor));
+    monthCursor = new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 1);
+  }
+
+  const todayMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  const focusMonthStart = (todayMonthStart >= firstMonth && todayMonthStart <= lastMonth)
+    ? todayMonthStart
+    : firstMonth;
+  const focusIndex = monthStarts.findIndex(d => d.getFullYear() === focusMonthStart.getFullYear() && d.getMonth() === focusMonthStart.getMonth());
+  const orderedMonths = focusIndex > 0
+    ? monthStarts.slice(focusIndex).concat(monthStarts.slice(0, focusIndex))
+    : monthStarts;
+
+  for (const monthStart of orderedMonths) {
     const monthCard = document.createElement("section");
     monthCard.className = "month";
 
     const monthTitle = document.createElement("div");
     monthTitle.className = "month-title";
-    monthTitle.textContent = getMonthName(monthCursor);
+    monthTitle.textContent = getMonthName(monthStart);
     monthCard.appendChild(monthTitle);
 
     const grid = document.createElement("div");
@@ -514,7 +577,7 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
       grid.appendChild(header);
     });
 
-    const firstOfMonth = new Date(monthCursor.getFullYear(), monthCursor.getMonth(), 1);
+    const firstOfMonth = new Date(monthStart.getFullYear(), monthStart.getMonth(), 1);
     const leadingBlanks = firstOfMonth.getDay();
 
     for (let i = 0; i < leadingBlanks; i++) {
@@ -523,9 +586,9 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
       grid.appendChild(blank);
     }
 
-    const monthDays = daysInMonth(monthCursor.getFullYear(), monthCursor.getMonth());
+    const monthDays = daysInMonth(monthStart.getFullYear(), monthStart.getMonth());
     for (let day = 1; day <= monthDays; day++) {
-      const current = new Date(monthCursor.getFullYear(), monthCursor.getMonth(), day);
+      const current = new Date(monthStart.getFullYear(), monthStart.getMonth(), day);
       const key = formatDate(current);
       const dayIndex = Math.floor((current - startDate) / (1000 * 60 * 60 * 24));
       const inTransition = Boolean(p.transitionDays && dayIndex >= 0 && dayIndex < p.transitionDays);
@@ -553,6 +616,9 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
       if (inTransition) {
         cell.classList.add("transition-phase");
       }
+      if (key === todayKey) {
+        cell.classList.add("current-day");
+      }
 
       grid.appendChild(cell);
     }
@@ -567,8 +633,6 @@ function renderVariant(titleText, subtitleText, getWorkerFn) {
 
     monthCard.appendChild(grid);
     monthsContainer.appendChild(monthCard);
-
-    monthCursor = new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 1);
   }
 
   variant.appendChild(monthsContainer);
