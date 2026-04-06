@@ -72,9 +72,9 @@ def parse_excel_bytes(xlsx_bytes: bytes) -> dict:
     wb = openpyxl.load_workbook(io.BytesIO(xlsx_bytes), data_only=True, read_only=True)
     
     # Accumulate across all sheets — later sheets override earlier ones for same date
-    schedule_by_date: dict[str, dict[str, str | None]] = {}
-    team_members_ordered: list[str] = []
-    seen_names: set[str] = set()
+    schedule_by_date = {}
+    team_members_ordered = []
+    seen_names = set()
 
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
@@ -85,7 +85,7 @@ def parse_excel_bytes(xlsx_bytes: bytes) -> dict:
 
         # --- Find date row (the row whose second non-empty cell parses as a date) ---
         date_row_idx = None
-        col_dates: list[str] = []  # YYYY-MM-DD strings, one per column (col 1+)
+        col_dates = []  # YYYY-MM-DD strings, one per column (col 1+)
 
         for i, row in enumerate(rows[:6]):  # date row is always in first 6 rows
             vals = [cell_val(c) for c in row]
@@ -148,7 +148,7 @@ def parse_excel_bytes(xlsx_bytes: bytes) -> dict:
     }
 
 
-def _try_parse_date_cell(cell) -> str | None:
+def _try_parse_date_cell(cell):
     """Try to parse a date from an openpyxl cell (may already be a datetime)."""
     if cell is None:
         return None
@@ -167,7 +167,7 @@ def _try_parse_date_cell(cell) -> str | None:
     return None
 
 
-def _try_parse_date(s: str, cell=None) -> str | None:
+def _try_parse_date(s: str, cell=None):
     """Wrapper that also checks the raw cell value."""
     if cell is not None:
         result = _try_parse_date_cell(cell)
@@ -189,7 +189,7 @@ def build_output_json(parsed: dict) -> dict:
     sorted_dates = sorted(schedule_by_date.keys())
     
     # Group by year-month
-    months: dict[str, list] = {}
+    months = {}
     for d in sorted_dates:
         ym = d[:7]  # YYYY-MM
         if ym not in months:
@@ -214,7 +214,7 @@ def build_output_json(parsed: dict) -> dict:
         })
     
     # Compute shift counts per person
-    counts: dict[str, dict] = {}
+    counts = {}
     for name in team_members:
         d_count = sum(1 for day in schedule_by_date.values() if day.get(name) == "D")
         n_count = sum(1 for day in schedule_by_date.values() if day.get(name) == "N")
