@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,49 +6,59 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>12-Month Calendar – Aaron & Randall (Variant 1)</title>
+<title>STE II Team Schedule</title>
 <style>
   body {
     font-family: Arial, sans-serif;
     padding: 20px;
     background: #fafafa;
     color: #222;
+    box-sizing: border-box;
   }
+  *, *::before, *::after { box-sizing: inherit; }
   h1 {
-    margin-bottom: 16px;
+    margin: 0 0 4px 0;
+    text-align: center;
+    font-size: 22px;
+  }
+  #statusBar {
+    text-align: center;
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 14px;
+    min-height: 18px;
+  }
+  .calendar-links {
+    margin-bottom: 14px;
+    font-size: 13px;
     text-align: center;
   }
-  p {
-    margin-top: 0;
-    margin-bottom: 16px;
+  .calendar-links a {
+    margin: 0 8px;
+    color: #1d4ed8;
   }
-  .totals {
+  .legend {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
+    justify-content: center;
     margin-bottom: 14px;
+    font-size: 12px;
   }
-  .total-card {
+  .legend-item {
     border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 8px 12px;
-    background: #fff;
-    min-width: 150px;
+    border-radius: 4px;
+    padding: 3px 8px;
   }
-  .total-value {
-    font-size: 20px;
-    font-weight: bold;
-  }
-  .breakdown-card .total-value {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-  .months {
+  .legend-d   { background: #dbeafe; }
+  .legend-n   { background: #ede9fe; }
+  .legend-off { background: #f3f4f6; color: #888; }
+  .legend-hl  { border: 2px solid #f59e0b; background: #fffbeb; }
+  #calendarContainer {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
-    max-width: 1200px;
+    max-width: 1260px;
     margin: 0 auto;
   }
   .month {
@@ -57,604 +67,315 @@
     border-radius: 8px;
     padding: 10px;
     overflow: hidden;
-    box-sizing: border-box;
   }
   .month-title {
     font-weight: bold;
+    font-size: 15px;
     margin-bottom: 8px;
-    font-size: 16px;
   }
   .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+    gap: 3px;
     width: 100%;
-    box-sizing: border-box;
   }
   .day-header {
     font-weight: bold;
     text-align: center;
-    padding: 6px 0;
+    padding: 5px 0;
     background: #eee;
     border: 1px solid #ccc;
-    font-size: 12px;
+    font-size: 11px;
     border-radius: 4px;
   }
   .cell {
-    border: 1px solid #ccc;
-    padding: 6px;
-    min-height: 62px;
-    font-size: 12px;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    min-width: 0;
-    box-sizing: border-box;
-  }
-  .empty {
-    background: #f3f3f3;
-    border-style: dashed;
-    color: #aaa;
-  }
-  .aaron {
-    background: #d9e8ff;
-  }
-  .randall {
-    background: #ffe4c4;
-  }
-  .off {
-    background: #f7f7f7;
-    color: #777;
-  }
-  .date {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 3px;
-    overflow-wrap: anywhere;
-  }
-  .worker {
-    font-size: 11px;
-    display: block;
-    white-space: nowrap;
+    padding: 4px 3px;
+    min-height: 76px;
+    font-size: 10px;
     overflow: hidden;
+    vertical-align: top;
   }
+  .cell.empty {
+    background: #f5f5f5;
+    border-style: dashed;
+    border-color: #e0e0e0;
+  }
+  .cell.off-day { background: #f9fafb; }
   .cell.current-day {
     outline: 2px solid #16a34a;
     outline-offset: -2px;
-    box-shadow: inset 0 0 0 1px #16a34a;
   }
-  .off .worker {
-    white-space: normal;
-    overflow-wrap: anywhere;
-    line-height: 1.15;
+  .cell-date {
+    font-weight: bold;
+    font-size: 11px;
+    margin-bottom: 3px;
+    display: block;
   }
-  .cell.randall-strike {
-    position: relative;
-  }
-  .cell.randall-strike::after {
-    content: "";
-    position: absolute;
-    left: 4px;
-    right: 4px;
-    top: 52%;
-    border-top: 2px solid #b91c1c;
-    transform: rotate(-20deg);
-    pointer-events: none;
-  }
-  .cell.transition-phase {
-    border: 2px solid #dc2626;
-  }
-  .legend {
-    margin-bottom: 14px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .legend-swatches {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .legend-item {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 12px;
-  }
-  .schedule-variant {
-    margin-bottom: 24px;
-  }
-  .plan-details {
-    margin-bottom: 10px;
-  }
-  .variant-title {
-    margin: 0 0 4px 0;
-    font-size: 18px;
-  }
-  .variant-subtitle {
-    margin: 0 0 10px 0;
-    color: #555;
-    font-size: 13px;
-  }
-  .pattern-btn {
-    padding: 8px 14px;
-    border: 1px solid #9ca3af;
-    border-radius: 10px;
-    background: linear-gradient(#ffffff, #f3f4f6);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.12);
-    cursor: pointer;
-    font-size: 13px;
-    font-family: Arial, sans-serif;
-    font-weight: 600;
-    transition: transform 0.08s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-  }
-  .pattern-btn:hover {
-    border-color: #6b7280;
-    background: linear-gradient(#ffffff, #e5e7eb);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.14);
-    transform: translateY(-1px);
-  }
-  .pattern-btn:active {
-    transform: translateY(0);
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
-  }
-  .pattern-btn.active {
-    border-color: #3a7bd5;
-    background: linear-gradient(#e8f1ff, #d9e8ff);
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.12);
+  .shift-group { margin-bottom: 2px; line-height: 1.25; }
+  .shift-label {
     font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.03em;
+    margin-right: 2px;
   }
-  #detailsToggle {
-    margin-bottom: 14px;
-    border-color: #6b7280;
-    background: #f3f4f6;
-    color: #1f2937;
-    font-weight: 600;
+  .shift-d .shift-label { color: #1d4ed8; }
+  .shift-n .shift-label { color: #6d28d9; }
+  .shift-names { display: flex; flex-wrap: wrap; gap: 2px; }
+  .name-chip {
+    border-radius: 3px;
+    padding: 1px 3px;
+    font-size: 9px;
+    white-space: nowrap;
+    line-height: 1.3;
   }
-  #detailsToggle:hover {
-    border-color: #4b5563;
-    background: #e5e7eb;
+  .chip-d { background: #dbeafe; color: #1e3a8a; }
+  .chip-n { background: #ede9fe; color: #4c1d95; }
+  .chip-highlight { border: 1px solid #d97706; }
+  #loadingMsg { text-align: center; padding: 60px 20px; color: #555; font-size: 15px; }
+  @media (max-width: 900px) {
+    #calendarContainer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  .calendar-links {
-    margin-bottom: 12px;
-    font-size: 13px;
-    text-align: center;
-  }
-  .calendar-links a {
-    margin-right: 12px;
-  }
-  @media (max-width: 768px) {
-    body {
-      padding: 12px;
-    }
-    h1 {
-      font-size: 20px;
-      margin-bottom: 12px;
-    }
-    .calendar-links {
-      margin-bottom: 10px;
-      font-size: 12px;
-      line-height: 1.4;
-    }
-    .months {
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    .month {
-      padding: 8px;
-    }
-    .month-title {
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
-    .day-header {
-      font-size: 10px;
-      padding: 4px 0;
-    }
-    .cell {
-      min-height: 54px;
-      padding: 4px;
-      font-size: 11px;
-    }
-    .worker {
-      font-size: 10px;
-      white-space: normal;
-      line-height: 1.15;
-    }
+  @media (max-width: 560px) {
+    body { padding: 10px; }
+    h1   { font-size: 18px; }
+    #calendarContainer { grid-template-columns: 1fr; }
+    .cell { min-height: 60px; padding: 3px 2px; }
+    .name-chip { font-size: 8px; }
   }
 </style>
 </head>
 <body>
 
-<h1>12-Month Schedule – Aaron & Randall</h1>
+<h1>STE II Team Schedule</h1>
+<div id="statusBar">Loading schedule…</div>
 
 <div class="calendar-links">
-  <strong>Calendar Downloads:</strong>
-  <a href="aaron_current_schedule.ics" download="aaron_current_schedule.ics">Download Aaron ICS</a>
-  <a href="randall_current_schedule.ics" download="randall_current_schedule.ics">Download Randall ICS</a>
+  <strong>My Calendar Downloads:</strong>
+  <a href="aaron_current_schedule.ics" download="aaron_current_schedule.ics">&#11015; Aaron ICS</a>
+  <a href="randall_current_schedule.ics" download="randall_current_schedule.ics">&#11015; Randall ICS</a>
 </div>
 
-<div id="compareContainer"></div>
+<div class="legend">
+  <span class="legend-item legend-d">D = Day (0700&#8211;1900)</span>
+  <span class="legend-item legend-n">N = Night (1900&#8211;0700)</span>
+  <span class="legend-item legend-off">blank = Off</span>
+  <span class="legend-item legend-hl">&#9733; Aaron &amp; Randall highlighted</span>
+</div>
+
+<div id="calendarContainer">
+  <div id="loadingMsg">Fetching latest schedule from GitHub&hellip;</div>
+</div>
 
 <script>
-const startDate = new Date(2026, 3, 9); // Apr 9, 2026
+// Raw GitHub URL for the auto-updated full team JSON (published by Power Automate)
+const FULL_TEAM_JSON_URL =
+  "https://raw.githubusercontent.com/upshawam/Lvl2Calendar/main/full_team_schedule.json";
 
-const totalDays = 364; // 26 exact 14-day cycles = perfectly balanced year
-const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const RANDALL_VISUAL_STRIKE_DATES = new Set([
-  "2026-04-13",
-  "2026-04-14",
-  "2026-04-15",
-  "2026-04-16",
-  "2026-04-20",
-  "2026-04-21",
-  "2026-04-22"
-]);
-const CURRENT_BASELINE_SEQUENCE364 = [
-  0,0,null,null,0,0,null,null,0,0,null,null,0,0,0,null,null,null,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,1,0,0,0,1,1
-];
-const MANAGER_SEQUENCE84 = CURRENT_BASELINE_SEQUENCE364.slice(0, 84);
-// Selected comparison patterns only.
-const PATTERNS = [
-  {
-    label: "Current Schedule",
-    desc: "Directly based on the updated monthly STE II CSV files in Full Calendar (Apr 2026 through Apr 2027), merged into one day-by-day baseline.",
-    sequence364: CURRENT_BASELINE_SEQUENCE364
-  }
+// People whose chips get an amber highlight border
+const HIGHLIGHT_MEMBERS = new Set(["Aaron Upshaw", "Randall Webb"]);
+
+// ── Fallback embedded data (Aaron & Randall only) ──────────────────────────
+const FALLBACK_START = "2026-04-09";
+const FALLBACK_SEQUENCE = [
+  0,0,null,null,0,0,null,null,0,0,null,null,0,0,0,null,null,null,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,null,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0,0,0,null,1,1,1,0,0,1,1,0,0,0,1,1,1,1,0,0,0,1,1
 ];
 
-let activePattern = 0; // default to Full weekend blocks
-
-function getWorkerFridayLeaning(globalIndex) {
-  const p = PATTERNS[activePattern];
-
-  if (p.transitionDays && p.transitionSequence84 && globalIndex < p.transitionDays) {
-    return p.transitionSequence84[globalIndex % p.transitionSequence84.length];
-  }
-
-  if (p.sequence364) {
-    return p.sequence364[globalIndex];
-  }
-
-  if (p.sequence84) {
-    return p.sequence84[globalIndex % p.sequence84.length];
-  }
-
-  const cycle = Math.floor(globalIndex / 14);
-  const dayInCycle = globalIndex % 14;
-  return cycle % 2 === 0 ? p.even[dayInCycle] : p.odd[dayInCycle];
-}
-
-function applyPatternOverride(worker, date) {
-  const p = PATTERNS[activePattern];
-  if (!p.overrides) return worker;
-  const key = formatDate(date);
-  return Object.prototype.hasOwnProperty.call(p.overrides, key) ? p.overrides[key] : worker;
-}
-
-function getWorkerTwoWeekFlip(globalIndex) {
-  const block = Math.floor(globalIndex / 14); // 2-week block
-  const dayOfWeekMonStart = globalIndex % 7; // Mon=0 ... Sun=6
-  const person1Pattern = dayOfWeekMonStart <= 2 ? 0 : 1; // Mon-Wed vs Thu-Sun
-
-  if (block % 2 === 0) {
-    return person1Pattern; // Block 0,2,4
-  }
-
-  return person1Pattern === 0 ? 1 : 0; // Block 1,3,5 (flip)
-}
+// ── Utilities ──────────────────────────────────────────────────────────────
+const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 function formatDate(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 
-function getMonthName(d) {
-  return d.toLocaleString("en-US", { month: "long", year: "numeric" });
+function addDays(dateStr, n) {
+  const [y,m,dd] = dateStr.split("-").map(Number);
+  const d = new Date(y, m-1, dd);
+  d.setDate(d.getDate() + n);
+  return formatDate(d);
 }
 
-function daysInMonth(year, monthIndex) {
-  return new Date(year, monthIndex + 1, 0).getDate();
+function parseLocalDate(str) {
+  const [y,m,dd] = str.split("-").map(Number);
+  return new Date(y, m-1, dd);
 }
 
-function buildSchedule(getWorkerFn) {
-  const p = PATTERNS[activePattern];
-  const scheduleByDate = new Map();
-  const workersByIndex = [];
-
-  for (let day = 0; day < totalDays; day++) {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + day);
-    const key = formatDate(date);
-    // Pattern-driven assignment (even/odd cycles)
-    const worker = applyPatternOverride(getWorkerFn(day), date);
-
-    scheduleByDate.set(key, worker);
-    workersByIndex.push(worker);
-  }
-
-  return {
-    scheduleByDate,
-    workersByIndex
-  };
-}
-
-function summarizeMetrics(workersByIndex, startIndex = 0) {
-  const windowWorkers = workersByIndex.slice(startIndex);
-  const metricDays = windowWorkers.length;
-  let aaronCount = 0;
-  let randallCount = 0;
-  let offCount = 0;
-  let aaronWeekendCount = 0;
-  let randallWeekendCount = 0;
-  let aaronWeekdayCount = 0;
-  let randallWeekdayCount = 0;
-
-  for (let i = startIndex; i < workersByIndex.length; i++) {
-    const worker = workersByIndex[i];
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + i);
-    const dayOfWeek = date.getDay(); // Sun=0 ... Sat=6
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-    const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
-
-    if (worker === 0) {
-      aaronCount++;
-      if (isWeekend) aaronWeekendCount++;
-      if (isWeekday) aaronWeekdayCount++;
-    } else if (worker === 1) {
-      randallCount++;
-      if (isWeekend) randallWeekendCount++;
-      if (isWeekday) randallWeekdayCount++;
-    } else {
-      offCount++;
+// ── Build schedule map from full-team JSON ─────────────────────────────────
+function jsonToScheduleMap(json) {
+  const map = new Map();
+  for (const month of json.months) {
+    for (const day of month.days) {
+      map.set(day.date, day.assignments);
     }
   }
-
-  const totalWeeks = metricDays / 7;
-  const hoursPerShift = 12;
-
-  return {
-    metricDays,
-    aaronCount,
-    randallCount,
-    offCount,
-    aaronWeekendCount,
-    randallWeekendCount,
-    aaronWeekdayCount,
-    randallWeekdayCount,
-    aaronMaxStreak: maxConsecutiveWork(windowWorkers, 0),
-    randallMaxStreak: maxConsecutiveWork(windowWorkers, 1),
-    aaronThreeDayOffBlocks: countExactOffBlocks(windowWorkers, 0, 3),
-    randallThreeDayOffBlocks: countExactOffBlocks(windowWorkers, 1, 3),
-    aaronFourDayOffBlocks: countExactOffBlocks(windowWorkers, 0, 4),
-    randallFourDayOffBlocks: countExactOffBlocks(windowWorkers, 1, 4),
-    aaronFivePlusDayOffBlocks: countAtLeastOffBlocks(windowWorkers, 0, 5),
-    randallFivePlusDayOffBlocks: countAtLeastOffBlocks(windowWorkers, 1, 5),
-    aaronAvgHoursPerWeek: ((aaronCount * hoursPerShift) / totalWeeks).toFixed(1),
-    randallAvgHoursPerWeek: ((randallCount * hoursPerShift) / totalWeeks).toFixed(1)
-  };
+  return map;
 }
 
-function maxConsecutiveWork(workersByIndex, workerId) {
-  let maxStreak = 0;
-  let currentStreak = 0;
+// ── Build fallback schedule map (Aaron & Randall only) ────────────────────
+function fallbackToScheduleMap() {
+  const map = new Map();
+  let cursor = FALLBACK_START;
+  for (const v of FALLBACK_SEQUENCE) {
+    const a = {};
+    if (v === 0)    a["Aaron Upshaw"]  = "D";
+    else if (v === 1) a["Randall Webb"] = "D";
+    map.set(cursor, a);
+    cursor = addDays(cursor, 1);
+  }
+  return map;
+}
 
-  for (const worker of workersByIndex) {
-    if (worker === workerId) {
-      currentStreak++;
-      if (currentStreak > maxStreak) maxStreak = currentStreak;
-    } else {
-      currentStreak = 0;
-    }
+// ── DOM helpers ────────────────────────────────────────────────────────────
+function firstName(name) {
+  const p = name.trim().split(" ");
+  return p.length === 1 ? p[0] : p[0] + " " + p[p.length-1][0] + ".";
+}
+
+function makeShiftGroup(shiftType, names) {
+  const group = document.createElement("div");
+  group.className = `shift-group shift-${shiftType.toLowerCase()}`;
+
+  const label = document.createElement("span");
+  label.className = "shift-label";
+  label.textContent = shiftType + ":";
+  group.appendChild(label);
+
+  const row = document.createElement("div");
+  row.className = "shift-names";
+  for (const name of names) {
+    const chip = document.createElement("span");
+    chip.className = `name-chip chip-${shiftType.toLowerCase()}${HIGHLIGHT_MEMBERS.has(name) ? " chip-highlight" : ""}`;
+    chip.textContent = firstName(name);
+    chip.title = name;
+    row.appendChild(chip);
+  }
+  group.appendChild(row);
+  return group;
+}
+
+// ── Render calendar ────────────────────────────────────────────────────────
+function renderCalendar(scheduleByDate) {
+  const container = document.getElementById("calendarContainer");
+  container.innerHTML = "";
+
+  const dates = [...scheduleByDate.keys()].sort();
+  if (!dates.length) {
+    container.innerHTML = "<p style='text-align:center;color:#888'>No schedule data.</p>";
+    return;
   }
 
-  return maxStreak;
-}
+  const today    = new Date();
+  const todayStr = formatDate(today);
 
-function countExactOffBlocks(workersByIndex, workerId, targetLength) {
-  let count = 0;
-  let currentStreak = 0;
+  const startD = parseLocalDate(dates[0]);
+  const endD   = parseLocalDate(dates[dates.length-1]);
 
-  for (const worker of [...workersByIndex, workerId]) {
-    if (worker !== workerId) {
-      currentStreak++;
-    } else {
-      if (currentStreak === targetLength) count++;
-      currentStreak = 0;
-    }
-  }
-
-  return count;
-}
-
-function countAtLeastOffBlocks(workersByIndex, workerId, minLength) {
-  let count = 0;
-  let currentStreak = 0;
-
-  for (const worker of [...workersByIndex, workerId]) {
-    if (worker !== workerId) {
-      currentStreak++;
-    } else {
-      if (currentStreak >= minLength) count++;
-      currentStreak = 0;
-    }
-  }
-
-  return count;
-}
-
-function renderVariant(titleText, subtitleText, getWorkerFn) {
-  const compareContainer = document.getElementById("compareContainer");
-  const variant = document.createElement("section");
-  variant.className = "schedule-variant";
-  const p = PATTERNS[activePattern];
-
-  const {
-    scheduleByDate,
-    workersByIndex
-  } = buildSchedule(getWorkerFn);
-  const fullMetrics = summarizeMetrics(workersByIndex, 0);
-  const mayStartDate = new Date(2026, 4, 1);
-  const mayStartIndex = Math.max(0, Math.floor((mayStartDate - startDate) / (1000 * 60 * 60 * 24)));
-  const mayForwardMetrics = summarizeMetrics(workersByIndex, mayStartIndex);
-
-  const totals = document.createElement("div");
-  totals.className = "totals";
-  const fullRangeCard = `
-    <div class="total-card breakdown-card">
-      <div>Full Range Metrics</div>
-      <div class="total-value">Shifts (Aaron/Randall): ${fullMetrics.aaronCount}/${fullMetrics.randallCount}</div>
-      <div class="total-value">Both Off: ${fullMetrics.offCount}</div>
-      <div class="total-value">Max Consecutive: ${fullMetrics.aaronMaxStreak}/${fullMetrics.randallMaxStreak}</div>
-      <div class="total-value">3-Day Offs: ${fullMetrics.aaronThreeDayOffBlocks}/${fullMetrics.randallThreeDayOffBlocks}</div>
-      <div class="total-value">4-Day Offs: ${fullMetrics.aaronFourDayOffBlocks}/${fullMetrics.randallFourDayOffBlocks}</div>
-      <div class="total-value">5+ Day Offs: ${fullMetrics.aaronFivePlusDayOffBlocks}/${fullMetrics.randallFivePlusDayOffBlocks}</div>
-      <div class="total-value">Weekend Shifts: ${fullMetrics.aaronWeekendCount}/${fullMetrics.randallWeekendCount}</div>
-      <div class="total-value">Weekday Shifts: ${fullMetrics.aaronWeekdayCount}/${fullMetrics.randallWeekdayCount}</div>
-      <div class="total-value">Avg Hrs/Week: ${fullMetrics.aaronAvgHoursPerWeek}/${fullMetrics.randallAvgHoursPerWeek}</div>
-    </div>
-  `;
-  const mayForwardCard = `
-    <div class="total-card breakdown-card">
-      <div>May Forward Metrics</div>
-      <div class="total-value">Shifts (Aaron/Randall): ${mayForwardMetrics.aaronCount}/${mayForwardMetrics.randallCount}</div>
-      <div class="total-value">Both Off: ${mayForwardMetrics.offCount}</div>
-      <div class="total-value">Max Consecutive: ${mayForwardMetrics.aaronMaxStreak}/${mayForwardMetrics.randallMaxStreak}</div>
-      <div class="total-value">3-Day Offs: ${mayForwardMetrics.aaronThreeDayOffBlocks}/${mayForwardMetrics.randallThreeDayOffBlocks}</div>
-      <div class="total-value">4-Day Offs: ${mayForwardMetrics.aaronFourDayOffBlocks}/${mayForwardMetrics.randallFourDayOffBlocks}</div>
-      <div class="total-value">5+ Day Offs: ${mayForwardMetrics.aaronFivePlusDayOffBlocks}/${mayForwardMetrics.randallFivePlusDayOffBlocks}</div>
-      <div class="total-value">Weekend Shifts: ${mayForwardMetrics.aaronWeekendCount}/${mayForwardMetrics.randallWeekendCount}</div>
-      <div class="total-value">Weekday Shifts: ${mayForwardMetrics.aaronWeekdayCount}/${mayForwardMetrics.randallWeekdayCount}</div>
-      <div class="total-value">Avg Hrs/Week: ${mayForwardMetrics.aaronAvgHoursPerWeek}/${mayForwardMetrics.randallAvgHoursPerWeek}</div>
-    </div>
-  `;
-  totals.innerHTML = `
-    ${fullRangeCard}
-    ${mayForwardCard}
-  `;
-
-  const monthsContainer = document.createElement("div");
-  monthsContainer.className = "months";
-
-  const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + totalDays - 1);
-
-  const today = new Date();
-  const todayKey = formatDate(today);
-  const firstMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
-  const lastMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+  // Collect months
+  const firstMS = new Date(startD.getFullYear(), startD.getMonth(), 1);
+  const lastMS  = new Date(endD.getFullYear(),   endD.getMonth(),   1);
   const monthStarts = [];
+  let mc = new Date(firstMS);
+  while (mc <= lastMS) { monthStarts.push(new Date(mc)); mc = new Date(mc.getFullYear(), mc.getMonth()+1, 1); }
 
-  let monthCursor = new Date(firstMonth);
-  while (monthCursor <= lastMonth) {
-    monthStarts.push(new Date(monthCursor));
-    monthCursor = new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 1);
-  }
+  // Current month first
+  const todayMS = new Date(today.getFullYear(), today.getMonth(), 1);
+  const fi = monthStarts.findIndex(d => d.getFullYear()===todayMS.getFullYear() && d.getMonth()===todayMS.getMonth());
+  const ordered = fi > 0 ? monthStarts.slice(fi).concat(monthStarts.slice(0,fi)) : monthStarts;
 
-  const todayMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-  const focusMonthStart = (todayMonthStart >= firstMonth && todayMonthStart <= lastMonth)
-    ? todayMonthStart
-    : firstMonth;
-  const focusIndex = monthStarts.findIndex(d => d.getFullYear() === focusMonthStart.getFullYear() && d.getMonth() === focusMonthStart.getMonth());
-  const orderedMonths = focusIndex > 0
-    ? monthStarts.slice(focusIndex).concat(monthStarts.slice(0, focusIndex))
-    : monthStarts;
+  const frag = document.createDocumentFragment();
 
-  for (const monthStart of orderedMonths) {
-    const monthCard = document.createElement("section");
-    monthCard.className = "month";
+  for (const ms of ordered) {
+    const section = document.createElement("section");
+    section.className = "month";
 
-    const monthTitle = document.createElement("div");
-    monthTitle.className = "month-title";
-    monthTitle.textContent = getMonthName(monthStart);
-    monthCard.appendChild(monthTitle);
+    const title = document.createElement("div");
+    title.className = "month-title";
+    title.textContent = ms.toLocaleString("en-US", { month: "long", year: "numeric" });
+    section.appendChild(title);
 
     const grid = document.createElement("div");
     grid.className = "calendar";
 
-    dayNames.forEach(name => {
-      const header = document.createElement("div");
-      header.className = "day-header";
-      header.textContent = name;
-      grid.appendChild(header);
+    DAY_NAMES.forEach(n => {
+      const h = document.createElement("div");
+      h.className = "day-header";
+      h.textContent = n;
+      grid.appendChild(h);
     });
 
-    const firstOfMonth = new Date(monthStart.getFullYear(), monthStart.getMonth(), 1);
+    const firstOfMonth  = new Date(ms.getFullYear(), ms.getMonth(), 1);
     const leadingBlanks = firstOfMonth.getDay();
-
-    for (let i = 0; i < leadingBlanks; i++) {
-      const blank = document.createElement("div");
-      blank.className = "cell empty";
-      grid.appendChild(blank);
+    for (let i=0; i<leadingBlanks; i++) {
+      const b = document.createElement("div"); b.className="cell empty"; grid.appendChild(b);
     }
 
-    const monthDays = daysInMonth(monthStart.getFullYear(), monthStart.getMonth());
-    for (let day = 1; day <= monthDays; day++) {
-      const current = new Date(monthStart.getFullYear(), monthStart.getMonth(), day);
-      const key = formatDate(current);
-      const dayIndex = Math.floor((current - startDate) / (1000 * 60 * 60 * 24));
-      const inTransition = Boolean(p.transitionDays && dayIndex >= 0 && dayIndex < p.transitionDays);
-      const worker = scheduleByDate.get(key);
+    const dim = new Date(ms.getFullYear(), ms.getMonth()+1, 0).getDate();
+    for (let d=1; d<=dim; d++) {
+      const dateStr = formatDate(new Date(ms.getFullYear(), ms.getMonth(), d));
+      const asn = scheduleByDate.get(dateStr);
       const cell = document.createElement("div");
 
-      if (worker === 0) {
-        cell.className = "cell aaron";
-        cell.innerHTML = `<span class="date">${day}</span><span class="worker">Aaron</span>`;
-      } else if (worker === 1) {
-        cell.className = "cell randall";
-        const strikeRandall = inTransition && RANDALL_VISUAL_STRIKE_DATES.has(key);
-        if (strikeRandall) {
-          cell.classList.add("randall-strike");
-        }
-        cell.innerHTML = `<span class="date">${day}</span><span class="worker">Randall</span>`;
-      } else if (worker === null) {
-        cell.className = "cell off";
-        cell.innerHTML = `<span class="date">${day}</span><span class="worker">Both Off</span>`;
-      } else {
+      if (!asn) {
         cell.className = "cell empty";
-        cell.innerHTML = `<span class="date">${day}</span><span class="worker">—</span>`;
-      }
+        const sp = document.createElement("span"); sp.className="cell-date"; sp.textContent=d; cell.appendChild(sp);
+      } else {
+        const dW = [], nW = [];
+        for (const [name, shift] of Object.entries(asn)) {
+          if (shift==="D") dW.push(name);
+          else if (shift==="N") nW.push(name);
+        }
+        cell.className = "cell" + (dW.length||nW.length ? "" : " off-day");
+        if (dateStr===todayStr) cell.classList.add("current-day");
 
-      if (inTransition) {
-        cell.classList.add("transition-phase");
+        const ds = document.createElement("span"); ds.className="cell-date"; ds.textContent=d; cell.appendChild(ds);
+        if (dW.length) cell.appendChild(makeShiftGroup("D", dW));
+        if (nW.length) cell.appendChild(makeShiftGroup("N", nW));
       }
-      if (key === todayKey) {
-        cell.classList.add("current-day");
-      }
-
       grid.appendChild(cell);
     }
 
-    const totalCells = leadingBlanks + monthDays;
-    const trailingBlanks = (7 - (totalCells % 7)) % 7;
-    for (let i = 0; i < trailingBlanks; i++) {
-      const blank = document.createElement("div");
-      blank.className = "cell empty";
-      grid.appendChild(blank);
+    const total = leadingBlanks + dim;
+    const trailing = (7 - (total%7)) % 7;
+    for (let i=0; i<trailing; i++) {
+      const b = document.createElement("div"); b.className="cell empty"; grid.appendChild(b);
     }
 
-    monthCard.appendChild(grid);
-    monthsContainer.appendChild(monthCard);
+    section.appendChild(grid);
+    frag.appendChild(section);
   }
-
-  variant.appendChild(monthsContainer);
-  compareContainer.appendChild(variant);
+  container.appendChild(frag);
 }
 
-function redraw() {
-  document.getElementById('compareContainer').innerHTML = '';
-  const p = PATTERNS[activePattern];
-  renderVariant(
-    'Pattern ' + (activePattern + 1) + ': ' + p.label.replace(/Pattern \d+ ?★? ?Best? ?/,''),
-    p.desc,
-    getWorkerFridayLeaning
-  );
+// ── Bootstrap ──────────────────────────────────────────────────────────────
+function setStatus(msg, isError) {
+  const bar = document.getElementById("statusBar");
+  bar.textContent = msg;
+  bar.style.color = isError ? "#b91c1c" : "#555";
 }
 
-// Initial render
-redraw();
+async function init() {
+  try {
+    const resp = await fetch(FULL_TEAM_JSON_URL + "?t=" + Date.now());
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const json = await resp.json();
+    if (!json.months || !json.months.length) throw new Error("empty JSON");
+
+    const map = jsonToScheduleMap(json);
+    const updated = json.lastUpdated
+      ? new Date(json.lastUpdated).toLocaleString("en-US", { dateStyle:"medium", timeStyle:"short" })
+      : "unknown";
+    const memberCount = json.teamMembers ? json.teamMembers.length : "?";
+    setStatus(`Full team schedule \u2014 ${memberCount} members \u00b7 Last updated: ${updated}`, false);
+    renderCalendar(map);
+  } catch (err) {
+    const map = fallbackToScheduleMap();
+    setStatus("\u26a0 Full team schedule not yet available (" + err.message + "). Showing Aaron & Randall only from embedded data.", true);
+    renderCalendar(map);
+  }
+}
+
+init();
 </script>
-
 </body>
 </html>
