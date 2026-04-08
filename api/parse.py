@@ -83,32 +83,39 @@ def parse_excel_bytes(xlsx_bytes: bytes) -> dict:
         if len(rows) < 4:
             continue  # not a schedule sheet
 
-        # --- Find date row (the row whose second non-empty cell parses as a date) ---
+        # --- Find date row (best date-like row near the top of the sheet) ---
         date_row_idx = None
         col_dates = []  # YYYY-MM-DD strings, one per column (col 1+)
 
-        for i, row in enumerate(rows[:6]):  # date row is always in first 6 rows
-            vals = [cell_val(c) for c in row]
-            # Look for m/d/yyyy or datetime objects
+        best_count = 0
+        best_idx = None
+        best_dates = None
+
+        # Search first 15 rows to handle monthly, bi-weekly, and custom tabs
+        for i, row in enumerate(rows[:15]):
             dates_found = []
-            for v in vals[1:]:  # skip column 0 (name column)
-                parsed = _try_parse_date(v, row[vals.index(v) + 1] if vals.index(v) + 1 < len(vals) else None)
-                # Also try the cell value directly as a datetime object
-                raw_cell = row[vals.index(v) + 1] if vals.index(v) + 1 < len(row) else None
-                parsed = _try_parse_date_cell(raw_cell)
+            for cell in row[1:]:  # skip column 0 (name column)
+                parsed = _try_parse_date_cell(cell)
+                if parsed is None:
+                    parsed = _try_parse_date(cell_val(cell))
                 dates_found.append(parsed)
 
-            filled = [d for d in dates_found if d is not None]
-            if len(filled) >= 20:  # expect at least 20 dates in a month sheet
-                date_row_idx = i
-                col_dates = dates_found
-                break
+            count = sum(1 for d in dates_found if d is not None)
+            if count > best_count:
+                best_count = count
+                best_idx = i
+                best_dates = dates_found
+
+        # Require at least a handful of date cells to qualify as a schedule row
+        if best_idx is not None and best_count >= 5:
+            date_row_idx = best_idx
+            col_dates = best_dates
 
         if date_row_idx is None:
             continue  # couldn't find date row
 
         # --- Parse person rows ---
-        for row in rows[date_row_idx + 2:]:  # skip date row and day-of-week row
+        for row in rows[date_row_idx + 1:]:
             raw_name = cell_val(row[0])
             
             # Stop at legend/blank section
@@ -127,7 +134,12 @@ def parse_excel_bytes(xlsx_bytes: bytes) -> dict:
                     shift = None
                 else:
                     v = cell_val(row[cell_idx]).upper()
-                    shift = v if v in ("D", "N") else None
+                    if v in ("D", "DAY"):
+                        shift = "D"
+                    elif v in ("N", "NIGHT"):
+                        shift = "N"
+                    else:
+                        shift = None
                 shifts.append((col_date, shift))
 
             # Record team member order (first appearance across all sheets)
@@ -159,7 +171,7 @@ def _try_parse_date_cell(cell):
         return v.strftime("%Y-%m-%d")
     s = str(v).strip()
     # Try m/d/yyyy or m/d/yy
-    for fmt in ("%m/%d/%Y", "%m/%d/%y", "%-m/%-d/%Y"):
+    for fmt in ("%m/%d/%Y", "%m/%d/%y"):
         try:
             return datetime.strptime(s, fmt).strftime("%Y-%m-%d")
         except ValueError:
