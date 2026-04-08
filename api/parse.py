@@ -83,40 +83,90 @@ def parse_excel_bytes(xlsx_bytes: bytes) -> dict:
         if len(rows) < 4:
             continue  # not a schedule sheet
 
-        # --- Find date row (best date-like row near the top of the sheet) ---
+        # --- Prefer strict known layout per tab ---
+        # Names: column B (index 1), Dates: row 2 (index 1), DOW: row 3 (index 2), Data: row 4+ (index 3+)
         date_row_idx = None
-        col_dates = []  # YYYY-MM-DD strings, one per column (col 1+)
+        date_col_indices = []
+        col_dates = []  # YYYY-MM-DD strings, aligned to date_col_indices
+        name_col_idx = 1
+        person_start_idx = None
 
-        best_count = 0
-        best_idx = None
-        best_dates = None
-
-        # Search first 15 rows to handle monthly, bi-weekly, and custom tabs
-        for i, row in enumerate(rows[:15]):
-            dates_found = []
-            for cell in row[1:]:  # skip column 0 (name column)
-                parsed = _try_parse_date_cell(cell)
+        if len(rows) >= 4:
+            strict_date_row = rows[1]
+            strict_dow_row = rows[2]
+            for col_idx in range(2, len(strict_date_row)):  # dates expected from column C onward
+                parsed = _try_parse_date_cell(strict_date_row[col_idx])
                 if parsed is None:
-                    parsed = _try_parse_date(cell_val(cell))
-                dates_found.append(parsed)
+                    parsed = _try_parse_date(cell_val(strict_date_row[col_idx]))
+                if parsed is None:
+                    continue
 
-            count = sum(1 for d in dates_found if d is not None)
-            if count > best_count:
-                best_count = count
-                best_idx = i
-                best_dates = dates_found
+                dow_text = cell_val(strict_dow_row[col_idx]) if col_idx < len(strict_dow_row) else ""
+                if dow_text:
+                    date_col_indices.append(col_idx)
+                    col_dates.append(parsed)
 
-        # Require at least a handful of date cells to qualify as a schedule row
-        if best_idx is not None and best_count >= 5:
-            date_row_idx = best_idx
-            col_dates = best_dates
+            if len(col_dates) >= 5:
+                date_row_idx = 1
+                name_col_idx = 1
+                person_start_idx = 3
+
+        # --- Fallback: infer date row for non-standard tabs ---
+        if date_row_idx is None:
+            best_count = 0
+            best_idx = None
+            best_dates = None
+
+            for i, row in enumerate(rows[:15]):
+                dates_found = []
+                date_indices_found = []
+                for col_idx, cell in enumerate(row):
+                    parsed = _try_parse_date_cell(cell)
+                    if parsed is None:
+                        parsed = _try_parse_date(cell_val(cell))
+                    if parsed is not None:
+                        date_indices_found.append(col_idx)
+                        dates_found.append(parsed)
+
+                count = len(dates_found)
+                if count > best_count:
+                    best_count = count
+                    best_idx = i
+                    best_dates = (date_indices_found, dates_found)
+
+            if best_idx is not None and best_count >= 5:
+                date_row_idx = best_idx
+                date_col_indices, col_dates = best_dates
+                person_start_idx = date_row_idx + 2
 
         if date_row_idx is None:
             continue  # couldn't find date row
 
+        first_date_col = min(date_col_indices) if date_col_indices else 2
+
+        # Default to column B for names when present, matching known workbook layout.
+        # Fall back to nearest column left of first date column.
+        if first_date_col >= 2:
+            name_col_idx = 1
+        elif first_date_col >= 1:
+            name_col_idx = 0
+        else:
+            name_col_idx = 0
+
         # --- Parse person rows ---
-        for row in rows[date_row_idx + 1:]:
-            raw_name = cell_val(row[0])
+        for row in rows[person_start_idx:]:
+            raw_name = ""
+            if name_col_idx < len(row):
+                raw_name = cell_val(row[name_col_idx])
+
+            if not raw_name:
+                # Fallback: first non-empty text cell before date columns.
+                name_col_limit = min(first_date_col, len(row))
+                for name_idx in range(name_col_limit):
+                    candidate = cell_val(row[name_idx])
+                    if candidate:
+                        raw_name = candidate
+                        break
             
             # Stop at legend/blank section
             if LEGEND_SIGNAL_PATTERNS.search(raw_name):
@@ -127,9 +177,7 @@ def parse_excel_bytes(xlsx_bytes: bytes) -> dict:
 
             shifts = []
             for i, col_date in enumerate(col_dates):
-                if col_date is None:
-                    continue
-                cell_idx = i + 1  # +1 because col 0 is the name
+                cell_idx = date_col_indices[i]
                 if cell_idx >= len(row):
                     shift = None
                 else:
